@@ -201,7 +201,7 @@ public:
 	constexpr uint8_t& a() { return rdata[3]; }
 	constexpr unsigned int ToU32()const
 	{
-		return ((BYTE(rdata[0]) << 24) + (BYTE(rdata[1]) << 16) + (BYTE(rdata[2]) << 8) + BYTE(rdata[3]));
+		return ((BYTE(rdata[3]) << 24) + (BYTE(rdata[0]) << 16) + (BYTE(rdata[1]) << 8) + BYTE(rdata[2]));
 	}
 	constexpr uint8_t* data() { return rdata; }
 };

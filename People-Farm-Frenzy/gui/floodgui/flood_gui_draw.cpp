@@ -1013,10 +1013,10 @@ void FloodDrawList::AllocRectFilled(const FloodVector2& min, const FloodVector2&
     unsigned int color = col.ToU32();
     IndexWrite[0] = idx; IndexWrite[1] = (FloodDrawIndex)(idx + 1); IndexWrite[2] = (FloodDrawIndex)(idx + 2);
     IndexWrite[3] = idx; IndexWrite[4] = (FloodDrawIndex)(idx + 2); IndexWrite[5] = (FloodDrawIndex)(idx + 3);
-    VertexWrite[0].position = min; VertexWrite[0].uv = uv; VertexWrite[0].col = color;
-    VertexWrite[1].position = b; VertexWrite[1].uv = uv; VertexWrite[1].col = color;
-    VertexWrite[2].position = max; VertexWrite[2].uv = uv; VertexWrite[2].col = color;
-    VertexWrite[3].position = d; VertexWrite[3].uv = uv; VertexWrite[3].col = color;
+    VertexWrite[0].position = min; VertexWrite[0].uv = FloodVector2(0, 0); VertexWrite[0].col = color;
+    VertexWrite[1].position = b; VertexWrite[1].uv = FloodVector2(1, 0); VertexWrite[1].col = color;
+    VertexWrite[2].position = max; VertexWrite[2].uv = FloodVector2(1, 1);; VertexWrite[2].col = color;
+    VertexWrite[3].position = d; VertexWrite[3].uv = FloodVector2(0, 1);; VertexWrite[3].col = color;
     VertexWrite += 4;
     VertexCurrentIdx += 4;
     IndexWrite += 6;

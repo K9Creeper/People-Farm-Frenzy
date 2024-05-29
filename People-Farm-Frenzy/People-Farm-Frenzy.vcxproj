@@ -147,6 +147,92 @@
     <ClCompile Include="People-Farm-Frenzy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gui\d3dx9\Include\d2d1.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1effectauthor.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1effectauthor_1.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1effecthelpers.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1effects.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1effects_1.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1helper.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1_1.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1_1helper.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1_2.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1_2helper.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1_3.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2d1_3helper.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2dbasetypes.h" />
+    <ClInclude Include="gui\d3dx9\Include\d2derr.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d10.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d10effect.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d10misc.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d10sdklayers.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d10shader.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d10_1.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d10_1shader.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d11.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d11sdklayers.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d11shader.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d11shadertracing.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d11_1.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d11_2.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d11_3.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d11_4.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d12.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d12sdklayers.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d12shader.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d12video.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d8.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d8caps.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d8types.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d9.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d9caps.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3d9types.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dcaps.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dcommon.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dcompiler.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dcsx.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dtypes.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx10.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx10async.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx10core.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx10math.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx10mesh.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx10tex.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx11.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx11async.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx11core.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx11tex.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx9.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx9anim.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx9core.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx9effect.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx9math.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx9mesh.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx9shader.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx9shape.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx9tex.h" />
+    <ClInclude Include="gui\d3dx9\Include\d3dx9xof.h" />
+    <ClInclude Include="gui\d3dx9\Include\dcommon.h" />
+    <ClInclude Include="gui\d3dx9\Include\dcomp.h" />
+    <ClInclude Include="gui\d3dx9\Include\dcompanimation.h" />
+    <ClInclude Include="gui\d3dx9\Include\dcomptypes.h" />
+    <ClInclude Include="gui\d3dx9\Include\ddraw.h" />
+    <ClInclude Include="gui\d3dx9\Include\dwrite.h" />
+    <ClInclude Include="gui\d3dx9\Include\dwrite_1.h" />
+    <ClInclude Include="gui\d3dx9\Include\dwrite_2.h" />
+    <ClInclude Include="gui\d3dx9\Include\dwrite_3.h" />
+    <ClInclude Include="gui\d3dx9\Include\dxgi.h" />
+    <ClInclude Include="gui\d3dx9\Include\dxgi1_2.h" />
+    <ClInclude Include="gui\d3dx9\Include\dxgi1_3.h" />
+    <ClInclude Include="gui\d3dx9\Include\dxgi1_4.h" />
+    <ClInclude Include="gui\d3dx9\Include\dxgi1_5.h" />
+    <ClInclude Include="gui\d3dx9\Include\dxgi1_6.h" />
+    <ClInclude Include="gui\d3dx9\Include\dxgicommon.h" />
+    <ClInclude Include="gui\d3dx9\Include\dxgidebug.h" />
+    <ClInclude Include="gui\d3dx9\Include\dxgiformat.h" />
+    <ClInclude Include="gui\d3dx9\Include\dxgitype.h" />
+    <ClInclude Include="gui\d3dx9\Include\dxva2api.h" />
     <ClInclude Include="gui\floodgui\flood_gui.h" />
     <ClInclude Include="gui\floodgui\flood_gui_draw.h" />
     <ClInclude Include="gui\floodgui\flood_gui_input.h" />
@@ -154,6 +240,18 @@
     <ClInclude Include="gui\floodgui\flood_gui_win.h" />
     <ClInclude Include="gui\gui.h" />
     <ClInclude Include="gui\window\window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="SpriteTest.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="gui\d3dx9\Include\d3dvec.inl" />
+    <None Include="gui\d3dx9\Include\d3dx10math.inl" />
+    <None Include="gui\d3dx9\Include\d3dx9math.inl" />
+    <None Include="gui\d3dx9\Include\d3dx_dxgiformatconvert.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="gui\d3dx9\Lib\x64\d3dx9.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

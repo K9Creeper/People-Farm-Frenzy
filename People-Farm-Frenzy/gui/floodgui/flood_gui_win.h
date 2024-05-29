@@ -15,7 +15,7 @@ struct FloodGuiWinData
 	}
 };
 
-bool FloodGuiWinInit(HWND hwnd) {
+inline bool FloodGuiWinInit(HWND hwnd) {
 	if (FloodGui::Context.Initalized)
 		return false;
 	FloodGuiWinData* backend_data = new FloodGuiWinData();
@@ -23,7 +23,7 @@ bool FloodGuiWinInit(HWND hwnd) {
 	backend_data->hwnd = hwnd;
 	FloodGui::Context.IO.BackendPlatformData = backend_data;
 }
-void FloodGuiWinNewFrame()
+inline void FloodGuiWinNewFrame()
 {
 	if (!FloodGui::Context.Initalized)
 		return;
@@ -37,7 +37,7 @@ void FloodGuiWinNewFrame()
 	FloodGui::Context.Display.DisplayPosition = FloodVector2{ static_cast<float>(hwndRect.left), static_cast<float>(hwndRect.top) };
 }
 
-void FloodGuiWinShutdown()
+inline void FloodGuiWinShutdown()
 {
 	if (!FloodGui::Context.Initalized)
 		return;
@@ -48,7 +48,7 @@ void FloodGuiWinShutdown()
 	delete backend_data;
 }
 
-LRESULT CALLBACK FloodGuiWindowWinProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+inline LRESULT CALLBACK FloodGuiWindowWinProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{

@@ -1,7 +1,5 @@
 #include "window.h"
 
-#include "../gui.h"
-
 extern LRESULT CALLBACK FloodGuiWindowWinProcHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -32,8 +30,8 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
-void Window::Initalize() {
-	gui = new Gui(this);
+void Window::Initalize(Gui* gui) {
+	this->gui = gui;
 	{
 		wc = { sizeof(wc), CS_CLASSDC, MainWindowProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"People-Farm-Frenzy0", nullptr };
 		RegisterClassExW(&wc);
@@ -63,5 +61,4 @@ Window::~Window() {
 
 	DestroyWindow(hwnd);
 	UnregisterClassW(wc.lpszClassName, wc.hInstance);
-	delete gui;
 }

@@ -6,7 +6,7 @@
 #include "flood_gui.h"
 #include "flood_gui_math.h"
 
-constexpr uint16_t WindowsInputs[] = { VK_TAB, VK_LEFT, VK_RIGHT,  VK_UP,  VK_DOWN, VK_PRIOR,  VK_NEXT,
+inline constexpr uint16_t WindowsInputs[] = { VK_TAB, VK_LEFT, VK_RIGHT,  VK_UP,  VK_DOWN, VK_PRIOR,  VK_NEXT,
  VK_HOME, VK_END,  VK_INSERT, VK_DELETE,  VK_BACK,  VK_SPACE,  VK_RETURN,  VK_OEM_7, VK_OEM_COMMA,
  VK_OEM_MINUS, VK_OEM_PERIOD, VK_OEM_2,  VK_OEM_1, VK_OEM_PLUS,  VK_OEM_4, VK_OEM_5, VK_OEM_6, VK_CAPITAL,  VK_SCROLL,
  VK_NUMLOCK,  VK_SNAPSHOT, VK_PAUSE,  VK_NUMPAD0,  VK_NUMPAD1, VK_NUMPAD2, VK_NUMPAD3, VK_NUMPAD4, VK_NUMPAD5,
@@ -15,7 +15,7 @@ constexpr uint16_t WindowsInputs[] = { VK_TAB, VK_LEFT, VK_RIGHT,  VK_UP,  VK_DO
 '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U',
  'V','W','X','Y','Z',VK_F1,VK_F2,VK_F3,VK_F4,VK_F5,VK_F6,VK_F7,VK_F8,VK_F9,VK_F10,VK_F11,VK_F12
 };
-constexpr FloodKey FloodGuiWinVirtualKeyToFloodGuiKey(WPARAM wParam)
+inline constexpr FloodKey FloodGuiWinVirtualKeyToFloodGuiKey(WPARAM wParam)
 {
     switch (wParam)
     {
@@ -53,7 +53,7 @@ constexpr FloodKey FloodGuiWinVirtualKeyToFloodGuiKey(WPARAM wParam)
     }
 }
 
-void FloodIO::AddKeyEventDown(uint16_t key, bool down)
+inline void FloodIO::AddKeyEventDown(uint16_t key, bool down)
 {
     if (FloodGui::Context.FrameData.FrameStage != FloodRenderStage_FrameRenderEnd)
         return;
@@ -67,13 +67,13 @@ void FloodIO::AddKeyEventDown(uint16_t key, bool down)
     }
  }
 
-void FloodIO::AddMouseMoveEvent(FloodVector2 mouse_pos)
+inline void FloodIO::AddMouseMoveEvent(FloodVector2 mouse_pos)
 {
     if (!FloodGui::Context.IO.MouseInput[FloodGuiButton_LeftMouse])
         this->pmouse_pos = mouse_pos;
     this->mouse_pos = mouse_pos;
 }
-void FloodIO::AddMouseClickEvent(FloodMouseButton button, bool button_down) {
+inline void FloodIO::AddMouseClickEvent(FloodMouseButton button, bool button_down) {
     if (FloodGui::Context.FrameData.FrameStage != FloodRenderStage_FrameRenderEnd)
         return;
     this->MouseInput[button] = button_down;

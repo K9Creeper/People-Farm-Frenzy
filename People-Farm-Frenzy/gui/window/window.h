@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include "../gui.h"
 
 class Gui;
 class Window {
@@ -16,7 +17,5 @@ private:
 public:
 	HWND hwnd;
 
-	void Initalize();
-
-	void Run();
+	void Initalize(Gui* gui);
 };

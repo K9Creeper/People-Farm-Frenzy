@@ -4,13 +4,14 @@
 
 static const FloodColor clearColor(1.f, 1.f, 1.f, 1.f);
 
-
 Gui::Gui(Window* window) {
-
+	this->window = window;
 }
 Gui::~Gui() {
-
+	renderHandles.clear();
 }
+
+void Gui::AddRenderHandle(render_handle_fn handle) { renderHandles.push_back(handle); }
 
 bool Gui::CreateDeviceD3D()
 {
@@ -31,7 +32,6 @@ bool Gui::CreateDeviceD3D()
 
 	return true;
 }
-
 void Gui::CleanupDeviceD3D()
 {
 	if (!window)
@@ -49,7 +49,7 @@ void Gui::FloodSetUp() {
 }
 
 void Gui::RunFlood() {
-	bool running = true;
+	static bool running = true;
 	MSG msg;
 	while (running) {
 		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) { TranslateMessage(&msg); DispatchMessage(&msg); if (msg.message == WM_QUIT) { CleanupDeviceD3D(); running = false; } }
@@ -63,10 +63,7 @@ void Gui::RunFlood() {
 		{
 			// Render Area
 			//
-			for (const auto& func : renderHandles) {
-				func();
-			}
-
+			for (int i = 0; i < renderHandles.size(); i++) { (renderHandles[i])(); }
 		}
 		FloodGui::EndFrame();
 
@@ -86,4 +83,13 @@ void Gui::RunFlood() {
 
 		HRESULT result = d3ddev->Present(nullptr, nullptr, nullptr, nullptr);
 	}
+}
+
+LPDIRECT3DTEXTURE9 Gui::LoadTexture( LPCWSTR src)const {
+	LPDIRECT3DTEXTURE9 texture;
+	if (D3D_OK != D3DXCreateTextureFromFile(d3ddev, src, &texture)) {
+		texture->Release();
+		return nullptr;
+	}
+	return texture;
 }

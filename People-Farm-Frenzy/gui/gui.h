@@ -7,7 +7,11 @@
 #include "floodgui/flood_gui.h"
 #include "floodgui/flood_gui_win.h"
 #include "floodgui/flood_gui_draw.h"
-#include "floodgui/flood_gui_math.h"
+
+#include "d3dx9/Include/d3dx9.h"
+#pragma comment(lib, "gui/d3dx9/Lib/x64/d3dx9")
+
+typedef void(*render_handle_fn)(void);
 
 class Window;
 class Gui {
@@ -21,9 +25,9 @@ private:
 
 	Window* window;
 
-	std::vector<std::function<void()>>renderHandles;
+	std::vector<render_handle_fn>renderHandles;
 public:
-	void AddRenderHandle(std::function<void()>& handle);
+	void AddRenderHandle(render_handle_fn handle);
 
 	bool CreateDeviceD3D();
 	void CleanupDeviceD3D();
@@ -31,4 +35,12 @@ public:
 	void FloodSetUp();
 
 	void RunFlood();
+
+	LPDIRECT3DTEXTURE9 LoadTexture(LPCWSTR src)const;
 };
+
+namespace GUI {
+	inline Window* window = nullptr;
+	inline Gui* gui = nullptr;
+
+}
