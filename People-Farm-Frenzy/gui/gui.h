@@ -1,7 +1,11 @@
 #pragma once
 #include <Windows.h>
 
+#include <functional>
+#include <vector>
+
 #include "floodgui/flood_gui.h"
+#include "floodgui/flood_gui_win.h"
 #include "floodgui/flood_gui_draw.h"
 #include "floodgui/flood_gui_math.h"
 
@@ -16,6 +20,15 @@ private:
 	D3DPRESENT_PARAMETERS d3dpp;
 
 	Window* window;
-public:
 
+	std::vector<std::function<void()>>renderHandles;
+public:
+	void AddRenderHandle(std::function<void()>& handle);
+
+	bool CreateDeviceD3D();
+	void CleanupDeviceD3D();
+
+	void FloodSetUp();
+
+	void RunFlood();
 };

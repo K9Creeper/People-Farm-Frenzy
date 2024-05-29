@@ -199,9 +199,9 @@ public:
 	constexpr uint8_t& g() { return rdata[1]; }
 	constexpr uint8_t& b() { return rdata[2]; }
 	constexpr uint8_t& a() { return rdata[3]; }
-	constexpr unsigned int ToU32()
+	constexpr unsigned int ToU32()const
 	{
-		return ((BYTE(this->a()) << 24) + (BYTE(this->r()) << 16) + (BYTE(this->g()) << 8) + BYTE(this->b()));
+		return ((BYTE(rdata[0]) << 24) + (BYTE(rdata[1]) << 16) + (BYTE(rdata[2]) << 8) + BYTE(rdata[3]));
 	}
 	constexpr uint8_t* data() { return rdata; }
 };
