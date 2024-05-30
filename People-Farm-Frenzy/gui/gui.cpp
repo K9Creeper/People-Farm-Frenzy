@@ -16,7 +16,7 @@ Gui::~Gui() {
 	renderHandles.clear();
 }
 
-void Gui::AddRenderHandle(render_handle_fn handle) { renderHandles.push_back(handle); }
+void Gui::AddRenderHandle(render_handle_fn handle, void* param = nullptr) { renderHandles.push_back({ handle, param }); }
 
 bool Gui::CreateDeviceD3D()
 {
@@ -68,7 +68,7 @@ void Gui::RunFlood() {
 		{
 			// Render Area
 			//
-			for (int i = 0; i < renderHandles.size(); i++) { (renderHandles[i])(); }
+			for (int i = 0; i < renderHandles.size(); i++) { (renderHandles[i].first)(renderHandles[i].second); }
 		}
 		FloodGui::EndFrame();
 

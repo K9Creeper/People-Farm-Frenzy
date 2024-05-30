@@ -152,6 +152,7 @@
     <ClInclude Include="game\game.h" />
     <ClInclude Include="game\graphics\animation\animation.h" />
     <ClInclude Include="game\graphics\sprite\sprite.h" />
+    <ClInclude Include="game\graphics\upgrade\upgrade.h" />
     <ClInclude Include="game\object\human\human.h" />
     <ClInclude Include="game\object\livingspace\livingspace.h" />
     <ClInclude Include="game\object\object.h" />

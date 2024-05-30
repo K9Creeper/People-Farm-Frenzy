@@ -4,6 +4,8 @@
 #include <functional>
 #include <vector>
 
+#include <pair>
+
 #include "floodgui/flood_gui.h"
 #include "floodgui/flood_gui_win.h"
 #include "floodgui/flood_gui_draw.h"
@@ -11,7 +13,7 @@
 #include "d3dx9/Include/d3dx9.h"
 #pragma comment(lib, "gui/d3dx9/Lib/x64/d3dx9")
 
-typedef void(*render_handle_fn)(void);
+typedef void(*render_handle_fn)(void*);
 
 class Window;
 class Gui {
@@ -25,11 +27,11 @@ private:
 
 	Window* window;
 
-	std::vector<render_handle_fn>renderHandles;
+	std::vector<std::pair<render_handle_fn, void*>>renderHandles;
 
 	std::unordered_map<LPCWSTR, LPDIRECT3DTEXTURE9>loadedTextures;
 public:
-	void AddRenderHandle(render_handle_fn handle);
+	void AddRenderHandle(render_handle_fn handle, void* param = nullptr);
 
 	bool CreateDeviceD3D();
 	void CleanupDeviceD3D();

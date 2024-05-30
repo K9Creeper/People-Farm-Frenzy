@@ -338,6 +338,9 @@
     <ClInclude Include="game\game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="game\graphics\upgrade\upgrade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="SpriteTest.jpg">
