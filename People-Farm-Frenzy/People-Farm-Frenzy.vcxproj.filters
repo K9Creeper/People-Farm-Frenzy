@@ -30,6 +30,9 @@
     <ClCompile Include="game\object\object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="game\game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gui\floodgui\flood_gui.h">
@@ -330,6 +333,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="game\graphics\animation\animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game\game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
