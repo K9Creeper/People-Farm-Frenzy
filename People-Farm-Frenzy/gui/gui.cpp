@@ -8,6 +8,11 @@ Gui::Gui(Window* window) {
 	this->window = window;
 }
 Gui::~Gui() {
+	for (auto& [src, texture] : loadedTextures) {
+		texture->Release();
+		texture = nullptr;
+	}
+
 	renderHandles.clear();
 }
 
@@ -85,11 +90,13 @@ void Gui::RunFlood() {
 	}
 }
 
-LPDIRECT3DTEXTURE9 Gui::LoadTexture( LPCWSTR src)const {
+LPDIRECT3DTEXTURE9 Gui::LoadTexture(LPCWSTR src) {
 	LPDIRECT3DTEXTURE9 texture;
+	if (loadedTextures.find(src) != loadedTextures.end())
+		return nullptr;
 	if (D3D_OK != D3DXCreateTextureFromFile(d3ddev, src, &texture)) {
 		texture->Release();
 		return nullptr;
 	}
-	return texture;
+	return (loadedTextures[src] = texture);
 }

@@ -5,7 +5,7 @@
 
 void RenderTest() {
     static auto texture = GUI::gui->LoadTexture(L"SpriteTest.jpg");
-    FloodGui::Context.GetBackgroundDrawList()->AddRectFilled(FloodVector2(0, 0), FloodVector2(300, 300), FloodColor(1, 1, 1), texture);
+    FloodGui::Context.GetBackgroundDrawList()->AddRectFilled(FloodVector2(0, 0), FloodVector2(300, 300), FloodColor(255, 255, 255, 255), texture);
 }
 
 int main()

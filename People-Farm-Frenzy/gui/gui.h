@@ -26,6 +26,8 @@ private:
 	Window* window;
 
 	std::vector<render_handle_fn>renderHandles;
+
+	std::unordered_map<LPCWSTR, LPDIRECT3DTEXTURE9>loadedTextures;
 public:
 	void AddRenderHandle(render_handle_fn handle);
 
@@ -36,7 +38,7 @@ public:
 
 	void RunFlood();
 
-	LPDIRECT3DTEXTURE9 LoadTexture(LPCWSTR src)const;
+	LPDIRECT3DTEXTURE9 LoadTexture(LPCWSTR src);
 };
 
 namespace GUI {

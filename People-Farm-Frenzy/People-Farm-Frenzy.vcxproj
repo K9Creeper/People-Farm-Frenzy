@@ -141,12 +141,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="game\object\object.cpp" />
     <ClCompile Include="gui\floodgui\flood_gui_draw.cpp" />
     <ClCompile Include="gui\gui.cpp" />
     <ClCompile Include="gui\window\window.cpp" />
     <ClCompile Include="People-Farm-Frenzy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="game\graphics\animation\animation.h" />
+    <ClInclude Include="game\graphics\sprite\sprite.h" />
+    <ClInclude Include="game\object\human\human.h" />
+    <ClInclude Include="game\object\livingspace\livingspace.h" />
+    <ClInclude Include="game\object\object.h" />
+    <ClInclude Include="game\object\organ\organ.h" />
+    <ClInclude Include="game\object\UFO\UFO.h" />
     <ClInclude Include="gui\d3dx9\Include\d2d1.h" />
     <ClInclude Include="gui\d3dx9\Include\d2d1effectauthor.h" />
     <ClInclude Include="gui\d3dx9\Include\d2d1effectauthor_1.h" />

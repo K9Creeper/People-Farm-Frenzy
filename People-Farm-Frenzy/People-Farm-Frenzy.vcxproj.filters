@@ -27,6 +27,9 @@
     <ClCompile Include="gui\window\window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="game\object\object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gui\floodgui\flood_gui.h">
@@ -306,6 +309,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gui\d3dx9\Include\dxva2api.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game\graphics\sprite\sprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game\object\object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game\object\human\human.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game\object\organ\organ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game\object\UFO\UFO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game\object\livingspace\livingspace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game\graphics\animation\animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
