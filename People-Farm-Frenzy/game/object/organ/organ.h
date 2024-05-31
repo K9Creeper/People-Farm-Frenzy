@@ -53,6 +53,19 @@ static std::unordered_map <OrganTypes, std::string>OrganNames{
 	{OrganType_Bone ,		"Bone"},
 };
 
+static std::unordered_map<OrganTypes, LPCWSTR>OrganTextures{
+	// ORGAN				SRC
+	{OrganType_Brain,		L"resources/sprites/SpriteTest.jpg"},
+	{OrganType_Heart ,		L"resources/sprites/SpriteTest.jpg"},
+	{OrganType_Lung ,		L"resources/sprites/SpriteTest.jpg"},
+	{OrganType_Kidney ,		L"resources/sprites/SpriteTest.jpg"},
+	{OrganType_Eyeball ,	L"resources/sprites/SpriteTest.jpg"},
+	{OrganType_Intestine ,	L"resources/sprites/SpriteTest.jpg"},
+	{OrganType_Stomach ,	L"resources/sprites/SpriteTest.jpg"},
+	{OrganType_Skin ,		L"resources/sprites/SpriteTest.jpg"},
+	{OrganType_Bone ,		L"resources/sprites/SpriteTest.jpg"},
+};
+
 class Organ : public GameObject {
 public:
 	std::string get_organ_name() { return sAttributes["name"]; }

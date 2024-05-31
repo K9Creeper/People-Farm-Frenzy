@@ -8,6 +8,9 @@
 #include "object/organ/organ.h"
 #include "object/livingspace/livingspace.h"
 #include "object/UFO/UFO.h"
+#include "object/sfx/sfx.h"
+
+#define GAME_BKG_FILENAME L"resources/sprites/SpriteTest.jpg"
 
 struct GameData {
 	uint64_t Glorbux = 0;
@@ -28,6 +31,8 @@ private:
 public:
 	void InitalizeGameData();
 	void InitalizeGameGraphics();
+
+	std::vector<GameObject>& GetGameObjects();
 };
 
 inline void GameLoop(Game* game);

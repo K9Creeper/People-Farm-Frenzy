@@ -28,8 +28,9 @@ struct Sprite {
 		inAnimation = false;
 		animationFrame = 0;
 		tLastAnimationFrame = std::chrono::milliseconds(0);
-		if (Animations.find(name) != Animations.end())
+		if (Animations.find(name) == Animations.end())
 			return;
+
 		inAnimation = true;
 		curAnimation = name;
 
@@ -40,15 +41,16 @@ struct Sprite {
 		if (!inAnimation)
 			return;
 		Animation& animation = Animations[curAnimation];
-		if (animationFrame < animation.frameDelay.size() && (animationFrame == 0 || animation.frameDelay[animationFrame - 1] >= tLastAnimationFrame))
+		std::chrono::milliseconds currentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+		if (animationFrame < animation.frameDelay.size() && (animationFrame == 0 || currentTime - animation.frameDelay[animationFrame - 1] >= tLastAnimationFrame))
 		{
 			texture = animation.textures[animationFrame];
-			tLastAnimationFrame = std::chrono::duration_cast<std::chrono::milliseconds>(
-				std::chrono::system_clock::now().time_since_epoch()
-				);
+			tLastAnimationFrame = currentTime;
+			
 			animationFrame++;
 		}
-		else if (animationFrame > animation.frameDelay.size()) {
+		else if (animationFrame >= animation.frameDelay.size()) {
+			
 			StopAnimation();
 		}
 	}

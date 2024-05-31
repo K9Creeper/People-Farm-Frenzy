@@ -341,9 +341,42 @@
     <ClInclude Include="game\graphics\upgrade\upgrade.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="game\object\sfx\sfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="SpriteTest.jpg">
+    <Image Include="resources\sprites\SpriteTest.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\fireball\frame_01_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\fireball\frame_00_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\fireball\frame_02_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\fireball\frame_03_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\fireball\frame_04_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\fireball\frame_05_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\fireball\frame_07_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\fireball\frame_06_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\fireball\frame_09_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\fireball\frame_08_delay-0.08s.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -4,8 +4,6 @@
 #include <functional>
 #include <vector>
 
-#include <pair>
-
 #include "floodgui/flood_gui.h"
 #include "floodgui/flood_gui_win.h"
 #include "floodgui/flood_gui_draw.h"

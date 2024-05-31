@@ -9,14 +9,18 @@ enum GameObjectType : uint16_t {
 	GameObjectType_Human,
 	GameObjectType_Organ,
 	GameObjectType_LivingSpace,
-	GameObjectType_UFODeliver
+	GameObjectType_UFOCollector,
+	GameObjectType_SFX,
 };
 
 // Game Object ;)
 class GameObject {
 public:
-	GameObject(){}
-	~GameObject(){}
+	GameObject(){ }
+	~GameObject(){
+		nAttributes.clear();
+		sAttributes.clear();
+	}
 private:
 	GameObjectType type = GameObjectType_None;
 
@@ -28,4 +32,9 @@ public:
 	std::unordered_map<std::string, double>nAttributes{};
 
 	GameObjectType GetType()const;
+	void SetType(GameObjectType type);
+	Sprite* GetSprite();
+
+	void SetSize(const int& width, const int& height);
+	void SetPosition(const int& x, const int& y);
 };

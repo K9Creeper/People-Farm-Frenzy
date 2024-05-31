@@ -16,7 +16,7 @@ Gui::~Gui() {
 	renderHandles.clear();
 }
 
-void Gui::AddRenderHandle(render_handle_fn handle, void* param = nullptr) { renderHandles.push_back({ handle, param }); }
+void Gui::AddRenderHandle(render_handle_fn handle, void* param) { renderHandles.push_back({ handle, param }); }
 
 bool Gui::CreateDeviceD3D()
 {
@@ -93,9 +93,10 @@ void Gui::RunFlood() {
 LPDIRECT3DTEXTURE9 Gui::LoadTexture(LPCWSTR src) {
 	LPDIRECT3DTEXTURE9 texture;
 	if (loadedTextures.find(src) != loadedTextures.end())
-		return nullptr;
+		return loadedTextures[src];
 	if (D3D_OK != D3DXCreateTextureFromFile(d3ddev, src, &texture)) {
-		texture->Release();
+		if(texture)
+			texture->Release();
 		return nullptr;
 	}
 	return (loadedTextures[src] = texture);

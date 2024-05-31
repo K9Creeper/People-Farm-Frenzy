@@ -36,8 +36,19 @@ static std::unordered_map <LivingSpaceTypes, int>LivingSpaceCapacity{
 
 /*
 Todo:
-	1. Create a unordered_map of textures for each LivingSpace
+	1. Put in textures for unordered_map of textures for each LivingSpace
 */
+
+static std::unordered_map<LivingSpaceTypes, LPCWSTR>LivingSpaceTextures{
+	// LivingSpaceTypes				SRC
+	{LivingSpaceType_None,			L""},
+	{LivingSpaceType_Shack,			L"resources/sprites/SpriteTest.jpg"},
+	{LivingSpaceType_House ,		L"resources/sprites/SpriteTest.jpg"},
+	{LivingSpaceType_Duplex ,		L"resources/sprites/SpriteTest.jpg"},
+	{LivingSpaceType_Apartment ,	L"resources/sprites/SpriteTest.jpg"},
+	{LivingSpaceType_Warehouse ,	L"resources/sprites/SpriteTest.jpg"},
+	{LivingSpaceType_Skyscraper ,	L"resources/sprites/SpriteTest.jpg"},
+};
 
 class LivingSpace : public GameObject {
 	std::string get_space_name() { return LivingSpaceNames[get_space_type()]; }

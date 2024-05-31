@@ -157,6 +157,7 @@
     <ClInclude Include="game\object\livingspace\livingspace.h" />
     <ClInclude Include="game\object\object.h" />
     <ClInclude Include="game\object\organ\organ.h" />
+    <ClInclude Include="game\object\sfx\sfx.h" />
     <ClInclude Include="game\object\UFO\UFO.h" />
     <ClInclude Include="gui\d3dx9\Include\d2d1.h" />
     <ClInclude Include="gui\d3dx9\Include\d2d1effectauthor.h" />
@@ -253,7 +254,17 @@
     <ClInclude Include="gui\window\window.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="SpriteTest.jpg" />
+    <Image Include="resources\sprites\fireball\frame_00_delay-0.08s.png" />
+    <Image Include="resources\sprites\fireball\frame_01_delay-0.08s.png" />
+    <Image Include="resources\sprites\fireball\frame_02_delay-0.08s.png" />
+    <Image Include="resources\sprites\fireball\frame_03_delay-0.08s.png" />
+    <Image Include="resources\sprites\fireball\frame_04_delay-0.08s.png" />
+    <Image Include="resources\sprites\fireball\frame_05_delay-0.08s.png" />
+    <Image Include="resources\sprites\fireball\frame_06_delay-0.08s.png" />
+    <Image Include="resources\sprites\fireball\frame_07_delay-0.08s.png" />
+    <Image Include="resources\sprites\fireball\frame_08_delay-0.08s.png" />
+    <Image Include="resources\sprites\fireball\frame_09_delay-0.08s.png" />
+    <Image Include="resources\sprites\SpriteTest.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gui\d3dx9\Include\d3dvec.inl" />
