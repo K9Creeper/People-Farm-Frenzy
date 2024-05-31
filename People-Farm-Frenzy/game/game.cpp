@@ -19,7 +19,7 @@ void SpawnUFO(std::vector<GameObject>& objects, const int& x, const int& y, cons
 	aniDelays.reserve(aniTexs.size());
 	for (int i = 0; i < aniTexs.size(); i++)
 		aniDelays.push_back(std::chrono::milliseconds(80));
-	h.GetSprite()->Animations["default"] = Animation(aniTexs, aniDelays);
+	h.GetSprite()->AddAnimation("default", Animation(aniTexs, aniDelays));
 	h.SetType(GameObjectType_UFOCollector);
 	objects.push_back(h);
 }
@@ -54,7 +54,7 @@ void SpawnVFXFireball(std::vector<GameObject>& objects, const int& x, const int&
 	aniDelays.reserve(aniTexs.size());
 	for (int i = 0; i < aniTexs.size(); i++)
 		aniDelays.push_back(std::chrono::milliseconds(80));
-	explosion.GetSprite()->Animations["default"] = Animation(aniTexs, aniDelays);
+	explosion.GetSprite()->AddAnimation("default",Animation(aniTexs, aniDelays));
 	objects.push_back(explosion);
 	objects.back().GetSprite()->StartAnimation("default");
 }
@@ -90,7 +90,6 @@ inline void GameLoop(Game* game) {
 				Human* human = reinterpret_cast<Human*>(&obj);
 				
 				if (human->get_time_left() <= 0) {
-
 					human->set_exploded();
 
 					/*
@@ -150,13 +149,17 @@ inline void GameLoop(Game* game) {
 					break;
 
 				bool buttonPressed = false;
-				// While Button is not held refill current_capacity to full
-				if (!buttonPressed) {
+				// While Button is held decrease curret_capacity - Spawm Humans
+				// While Button is not held refill current_capacity to full (at a rate)
+
+				if (buttonPressed) {
+				}
+				else {
 					//livingspace->set_current_capacity();
+
 				}
 
-				// While Button is held decrease curret_capacity
-				// Spawm Humans
+				
 
 				break;
 			}
@@ -173,6 +176,10 @@ inline void GameLoop(Game* game) {
 				if (!ufo->GetSprite()->inAnimation)
 					ufo->GetSprite()->StartAnimation("default");				
 				
+
+				// FLY AROUND
+
+
 				break;
 			}
 			
@@ -250,7 +257,7 @@ inline void GameLoop(Game* game) {
 	static std::chrono::milliseconds lastFrame = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	std::chrono::milliseconds now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 
-	if (now - std::chrono::milliseconds(270) >= lastFrame) {
+	if (now - std::chrono::milliseconds(280) >= lastFrame) {
 		frame++;
 		lastFrame = now;
 	}

@@ -21,6 +21,8 @@ struct GameData {
 	Upgrade<LivingSpace> LivingSpaceUpgrades[4]{ };
 	
 	Upgrade<double> ButtonMultiplier{ 1.0 };
+	Upgrade<double> LivingSpaceRefillMultiplier{ 1.0 };
+	Upgrade<int> UFOCollectors{ 0 };
 };
 
 class Game {

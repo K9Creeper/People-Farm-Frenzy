@@ -18,6 +18,11 @@ struct Sprite {
 	//	Plays Designated Animation
 	std::unordered_map<std::string, Animation>Animations;
 
+	void AddAnimation(const std::string& name, const Animation& animation)
+	{
+		Animations[name] = animation;
+	}
+
 	bool inAnimation = false;
 	std::string curAnimation{};
 	int animationFrame = 0;
