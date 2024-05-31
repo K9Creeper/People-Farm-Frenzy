@@ -11,7 +11,7 @@ enum OrganTypes : uint16_t {
 	OrganType_Intestine,
 	OrganType_Stomach,
 	OrganType_Skin,
-	OrganType_Bone
+	OrganType_Skull
 };
 
 static std::unordered_map <OrganTypes, double>OrganChances{
@@ -24,7 +24,7 @@ static std::unordered_map <OrganTypes, double>OrganChances{
 	{OrganType_Intestine ,	10 / 100.f },
 	{OrganType_Stomach ,	15 / 100.f},
 	{OrganType_Skin ,		30 / 100.f},
-	{OrganType_Bone ,		30.5 / 100.f },
+	{OrganType_Skull ,		30.5 / 100.f },
 };
 
 static std::unordered_map <OrganTypes, double>OrganValues{
@@ -37,7 +37,7 @@ static std::unordered_map <OrganTypes, double>OrganValues{
 	{OrganType_Intestine ,	15.f },
 	{OrganType_Stomach ,	10.f},
 	{OrganType_Skin ,		6.f},
-	{OrganType_Bone ,		5.f },
+	{OrganType_Skull ,		5.f },
 };
 
 static std::unordered_map <OrganTypes, std::string>OrganNames{
@@ -50,20 +50,20 @@ static std::unordered_map <OrganTypes, std::string>OrganNames{
 	{OrganType_Intestine ,	"Intestine"},
 	{OrganType_Stomach ,	"Stomach"},
 	{OrganType_Skin ,		"Skin"},
-	{OrganType_Bone ,		"Bone"},
+	{OrganType_Skull ,		"Skull"},
 };
 
 static std::unordered_map<OrganTypes, LPCWSTR>OrganTextures{
 	// ORGAN				SRC
-	{OrganType_Brain,		L"resources/sprites/SpriteTest.jpg"},
-	{OrganType_Heart ,		L"resources/sprites/SpriteTest.jpg"},
-	{OrganType_Lung ,		L"resources/sprites/SpriteTest.jpg"},
-	{OrganType_Kidney ,		L"resources/sprites/SpriteTest.jpg"},
-	{OrganType_Eyeball ,	L"resources/sprites/SpriteTest.jpg"},
-	{OrganType_Intestine ,	L"resources/sprites/SpriteTest.jpg"},
-	{OrganType_Stomach ,	L"resources/sprites/SpriteTest.jpg"},
-	{OrganType_Skin ,		L"resources/sprites/SpriteTest.jpg"},
-	{OrganType_Bone ,		L"resources/sprites/SpriteTest.jpg"},
+	{OrganType_Brain,		L"resources/sprites/organs/brain.png"},
+	{OrganType_Heart ,		L"resources/sprites/organs/heart.png"},
+	{OrganType_Lung ,		L"resources/sprites/organs/lung.png"},
+	{OrganType_Kidney ,		L"resources/sprites/organs/kidney.png"},
+	{OrganType_Eyeball ,	L"resources/sprites/organs/eyeball.png"},
+	{OrganType_Intestine ,	L"resources/sprites/organs/intestine.png"},
+	{OrganType_Stomach ,	L"resources/sprites/organs/stomach.png"},
+	{OrganType_Skin ,		L"resources/sprites/organs/skin.png"},
+	{OrganType_Skull ,		L"resources/sprites/organs/skull.png"},
 };
 
 class Organ : public GameObject {

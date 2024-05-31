@@ -106,7 +106,6 @@ inline void GameLoop(Game* game) {
 					{
 						Organ newOrgan = human->drop_new_organ(pos.x, pos.y, 15, 15);
 						newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
-
 						objects.push_back(newOrgan);
 					}
 
@@ -141,6 +140,10 @@ inline void GameLoop(Game* game) {
 				// add to their data collecting 
 				// dat shii
 
+				if (FloodGui::Context.IO.mouse_pos.x >= organ->GetSprite()->left && FloodGui::Context.IO.mouse_pos.x <= organ->GetSprite()->right && FloodGui::Context.IO.mouse_pos.y >= organ->GetSprite()->top && FloodGui::Context.IO.mouse_pos.y <= organ->GetSprite()->bottom)
+				{
+					// Collect that shiii
+				}
 				break;
 			}
 			case GameObjectType_LivingSpace:

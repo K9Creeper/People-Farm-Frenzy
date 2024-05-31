@@ -268,6 +268,15 @@
     <Image Include="resources\sprites\map\map_1.png" />
     <Image Include="resources\sprites\map\map_2.png" />
     <Image Include="resources\sprites\map\map_3.png" />
+    <Image Include="resources\sprites\organs\brain.png" />
+    <Image Include="resources\sprites\organs\eyeball.png" />
+    <Image Include="resources\sprites\organs\heart.png" />
+    <Image Include="resources\sprites\organs\intestine.png" />
+    <Image Include="resources\sprites\organs\kidney.png" />
+    <Image Include="resources\sprites\organs\lung.png" />
+    <Image Include="resources\sprites\organs\skin.png" />
+    <Image Include="resources\sprites\organs\skull.png" />
+    <Image Include="resources\sprites\organs\stomach.png" />
     <Image Include="resources\sprites\SpriteTest.jpg" />
     <Image Include="resources\sprites\ufo\sprite_0.png" />
     <Image Include="resources\sprites\ufo\sprite_1.png" />

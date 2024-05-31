@@ -427,6 +427,33 @@
     <Image Include="resources\sprites\map\map_2.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\sprites\organs\brain.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\organs\eyeball.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\organs\heart.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\organs\intestine.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\organs\kidney.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\organs\lung.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\organs\skin.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\organs\skull.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\organs\stomach.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="gui\d3dx9\Include\d3dvec.inl">
