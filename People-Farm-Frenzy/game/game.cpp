@@ -63,7 +63,7 @@ inline void GameLoop(Game* game) {
 	// Part 1 Logic
 	//
 	std::vector<GameObject>& objects = game->GetGameObjects();
-
+	GameData* gameData = game->GetGameData();
 
 	static bool press = false;
 	// This is a Animation Test
@@ -153,6 +153,7 @@ inline void GameLoop(Game* game) {
 				// While Button is not held refill current_capacity to full (at a rate)
 
 				if (buttonPressed) {
+					//if(livingspace->get_current_capacity() )
 				}
 				else {
 					//livingspace->set_current_capacity();
@@ -325,3 +326,6 @@ void Game::InitalizeGameGraphics() {
 }
 
 std::vector<GameObject>& Game::GetGameObjects() { return GameObjects; }
+
+GameData* Game::GetGameData() { return &gameData; }
+

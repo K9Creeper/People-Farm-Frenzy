@@ -38,6 +38,7 @@ public:
 	void InitalizeGameGraphics();
 
 	std::vector<GameObject>& GetGameObjects();
+	GameData* GetGameData();
 };
 
 inline void GameLoop(Game* game);
