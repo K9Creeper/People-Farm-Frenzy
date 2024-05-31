@@ -24,39 +24,62 @@ public:
 	int get_time_left() { return nAttributes["time_left"]; }
 	void set_time_left(const int& time) { nAttributes["time_left"] = time; }
 	bool get_exploded() { return nAttributes["exploded"]; }
-	void set_exploded() { nAttributes["exploded"] = true; }
-	Organ drop_new_organ() {
-		const double& random = static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+	void set_exploded(bool b = true) { nAttributes["exploded"] = b; }
+	Organ drop_new_organ(const int& x, const int& y, const int& width, const int& height) {
+		double random = static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 
 		Organ organ;
-		if (random <= OrganChances[OrganType_Bone])
-			organ.nAttributes["type"] = OrganType_Bone;
-		if (random <= OrganChances[OrganType_Skin])
-			organ.nAttributes["type"] = OrganType_Skin;
-		if (random <= OrganChances[OrganType_Stomach])
-			organ.nAttributes["type"] = OrganType_Stomach;
-		if (random <= OrganChances[OrganType_Intestine])
-			organ.nAttributes["type"] = OrganType_Intestine;
-		if (random <= OrganChances[OrganType_Eyeball])
-			organ.nAttributes["type"] = OrganType_Eyeball;
-		if (random <= OrganChances[OrganType_Kidney])
-			organ.nAttributes["type"] = OrganType_Kidney;
-		if (random <= OrganChances[OrganType_Lung])
-			organ.nAttributes["type"] = OrganType_Lung;
-		if (random <= OrganChances[OrganType_Heart])
-			organ.nAttributes["type"] = OrganType_Heart;
-		if (random <= OrganChances[OrganType_Brain])
-			organ.nAttributes["type"] = OrganType_Brain;
-        
-		// Lol who cares about effi.
-		organ.SetSize(50, 50);
-		organ.SetPosition(GetSprite()->x, GetSprite()->y);
 		organ.SetType(GameObjectType_Organ);
+		double Chance = 1.f;
+	
+		if (random <= Chance) {
+			organ.nAttributes["type"] = OrganType_Brain;
+		}
+		Chance -= OrganChances[OrganType_Brain];
+		if (random <= Chance) {
+			organ.nAttributes["type"] = OrganType_Heart;
+
+		}
+		Chance -= OrganChances[OrganType_Heart];
+		if (random <= Chance) {
+			organ.nAttributes["type"] = OrganType_Lung;
+
+		}
+		Chance -= OrganChances[OrganType_Lung];
+		if (random <= Chance) {
+			organ.nAttributes["type"] = OrganType_Kidney;
+
+		}
+		Chance -= OrganChances[OrganType_Kidney];
+		if (random <= Chance) {
+			organ.nAttributes["type"] = OrganType_Eyeball;
+
+		}
+		Chance -= OrganChances[OrganType_Eyeball];
+		if (random <= Chance) {
+			organ.nAttributes["type"] = OrganType_Intestine;
+
+		}
+		Chance -= OrganChances[OrganType_Intestine];
+		if (random <= Chance) {
+			organ.nAttributes["type"] = OrganType_Stomach;
+		}
+		Chance -= OrganChances[OrganType_Stomach];
+		if (random <= Chance) {
+			organ.nAttributes["type"] = OrganType_Skin;
+		}
+		Chance -= OrganChances[OrganType_Skin];
+		if (random <= Chance) {
+			organ.nAttributes["type"] = OrganType_Bone;
+		}
+		Chance -= OrganChances[OrganType_Bone];
+
+		organ.SetSize(width, height);
+		organ.SetPosition(x, y);
 		
 		organ.nAttributes["value"] = OrganValues[(OrganTypes)organ.nAttributes["type"]];
 		organ.sAttributes["name"] = OrganNames[(OrganTypes)organ.nAttributes["type"]];
 		
-
 		return organ;
 	}
 };

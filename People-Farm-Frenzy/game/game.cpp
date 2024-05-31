@@ -29,6 +29,7 @@ void SpawnHuman(std::vector<GameObject>& objects, const int& x, const int& y, co
 	h.SetSize(width, height);
 	h.SetPosition(x, y);
 	h.GetSprite()->texture = GUI::gui->LoadTexture(L"resources/sprites/SpriteTest.jpg");
+	h.set_exploded(false);
 	h.set_time_left(0);
 	h.SetType(GameObjectType_Human);
 	objects.push_back(h);
@@ -39,8 +40,8 @@ void SpawnVFXFireball(std::vector<GameObject>& objects, const int& x, const int&
 	explosion.nAttributes["type"] = VFXType_Fireball;
 	explosion.SetType(GameObjectType_VFX);
 
-	explosion.SetSize(50, 50);
-	explosion.SetPosition(50, 50);
+	explosion.SetSize(width, height);
+	explosion.SetPosition(x, y);
 
 
 	explosion.GetSprite()->texture = GUI::gui->LoadTexture(VFXTextures[explosion.get_vfx_type()][0]);
@@ -68,11 +69,10 @@ inline void GameLoop(Game* game) {
 	static bool press = false;
 	// This is a Animation Test
 	{
-		
 		if (FloodGui::Context.IO.MouseInput[FloodMouseButton::FloodGuiButton_LeftMouse] && !press) {
 			press = true;
 			
-			SpawnHuman(objects, 100, 100, 150 , 150);
+			SpawnHuman(objects, 500, 500, 50 , 50);
 		}
 		else if (!FloodGui::Context.IO.MouseInput[FloodMouseButton::FloodGuiButton_LeftMouse]) {
 			press = false;
@@ -84,34 +84,36 @@ inline void GameLoop(Game* game) {
 		GameObject& obj = objects[j];
 		GameObjectType type = obj.GetType();
 		
+		FloodVector2 pos = FloodVector2(obj.GetSprite()->x, obj.GetSprite()->y);
+
 		switch (type) {
 			case GameObjectType_Human:
 			{
 				Human* human = reinterpret_cast<Human*>(&obj);
-				
+
+				if (human->get_exploded()) {
+					// Remove human from existance
+					objects.erase(objects.begin() + j);
+					break;
+				}
+
 				if (human->get_time_left() <= 0) {
 					human->set_exploded();
 
 					/*
-					 VISUAL EFFECTS
-					*/
-					SpawnVFXFireball(objects, human->GetSprite()->x, human->GetSprite()->y, 50, 50);
-
-					/*
 					DROP ORGAN
 					*/
-
-					// Having an issue with this section
-					// FIX THIS
 					{
-						Organ newOrgan = human->drop_new_organ();
+						Organ newOrgan = human->drop_new_organ(pos.x, pos.y, 15, 15);
 						newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
 
 						objects.push_back(newOrgan);
 					}
 
-					// Remove human from existance
-					objects.erase(objects.begin() + j);
+					/*
+					 VISUAL EFFECTS
+					*/
+					SpawnVFXFireball(objects, pos.x, pos.y, 55, 55);
 				}
 				else {
 					// Make them run to a certian place!
@@ -270,7 +272,10 @@ inline void GameLoop(Game* game) {
 		Sprite* sprite = obj.GetSprite();
 		if (obj.GetType() == GameObjectType_None || !sprite->texture)
 			continue;
-		
+		if (obj.GetType() == GameObjectType_Organ)
+		{
+
+		}
 		drawList->AddRectFilled(FloodVector2(sprite->left, sprite->top), FloodVector2(sprite->right, sprite->bottom), FloodColor(1.f, 1.f, 1.f), sprite->texture);
 	}
 }

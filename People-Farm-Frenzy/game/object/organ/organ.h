@@ -5,13 +5,13 @@
 enum OrganTypes : uint16_t {
 	OrganType_Brain = 0,
 	OrganType_Heart,
-	OrganType_Stomach,
 	OrganType_Lung,
 	OrganType_Kidney,
-	OrganType_Intestine,
 	OrganType_Eyeball,
-	OrganType_Bone,
-	OrganType_Skin
+	OrganType_Intestine,
+	OrganType_Stomach,
+	OrganType_Skin,
+	OrganType_Bone
 };
 
 static std::unordered_map <OrganTypes, double>OrganChances{

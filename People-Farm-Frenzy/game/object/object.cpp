@@ -13,29 +13,21 @@ Sprite* GameObject::GetSprite() {
 	return &sprite;
 }
 
-
-constexpr void ModRect(const int& x, const int& y, int& l, int& t, int& r, int& b)
-{
-	const int& width = r - l;
-	const int& height = b - t;
-
-	l = x - width / 2;
-	t = y - height / 2;
-
-	b = x + width / 2;
-	r = y + height / 2;
-}
-
 void GameObject::SetSize(const int& width, const int& height) {
-	sprite.left -= width / 2 + sprite.x;
-	sprite.top -= height / 2 + sprite.x;
-	sprite.right += width / 2 + sprite.x;
-	sprite.bottom += height / 2 + sprite.x;
+	const int& halfX = width / 2;
+	const int& halfY = height / 2;
+	sprite.left = sprite.x - halfX;
+	sprite.top = sprite.y-halfY;
+	sprite.right = halfX + sprite.x;
+	sprite.bottom = halfY + sprite.y;
 }
 
 void GameObject::SetPosition(const int& x, const int& y) {
+	const int& width = sprite.right - sprite.left;
+	const int& height = sprite.bottom - sprite.top;
+
 	sprite.x = x;
 	sprite.y = y;
 
-	ModRect(sprite.x, sprite.y, sprite.left, sprite.top, sprite.right, sprite.bottom);
+	SetSize(width, height);
 }
