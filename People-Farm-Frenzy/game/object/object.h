@@ -10,7 +10,7 @@ enum GameObjectType : uint16_t {
 	GameObjectType_Organ,
 	GameObjectType_LivingSpace,
 	GameObjectType_UFOCollector,
-	GameObjectType_SFX,
+	GameObjectType_VFX,
 };
 
 // Game Object ;)

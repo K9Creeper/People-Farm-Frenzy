@@ -341,7 +341,7 @@
     <ClInclude Include="game\graphics\upgrade\upgrade.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game\object\sfx\sfx.h">
+    <ClInclude Include="game\object\vfx\vfx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -377,6 +377,54 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="resources\sprites\fireball\frame_08_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_0.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_6.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_7.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_8.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_9.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_10.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\ufo\sprite_11.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\map\map_0.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\map\map_1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\map\map_3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\map\map_2.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

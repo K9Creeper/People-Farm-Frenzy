@@ -3,6 +3,62 @@
 #include "../gui/gui.h"
 #include "../gui/window/window.h"
 
+void SpawnUFO(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height)
+{
+	UFO h;
+	h.SetSize(width, height);
+	h.SetPosition(x, y);
+	h.GetSprite()->texture = GUI::gui->LoadTexture(UFOAnimationLoop[0]);
+	std::vector< LPDIRECT3DTEXTURE9>aniTexs;
+	aniTexs.reserve(UFOAnimationLoop.size());
+	for (int i = 0; i < UFOAnimationLoop.size(); i++) {
+		LPCWSTR string = UFOAnimationLoop[i];
+		aniTexs.push_back(GUI::gui->LoadTexture(string));
+	}
+	std::vector<std::chrono::milliseconds>aniDelays;
+	aniDelays.reserve(aniTexs.size());
+	for (int i = 0; i < aniTexs.size(); i++)
+		aniDelays.push_back(std::chrono::milliseconds(80));
+	h.GetSprite()->Animations["default"] = Animation(aniTexs, aniDelays);
+	h.SetType(GameObjectType_UFOCollector);
+	objects.push_back(h);
+}
+
+void SpawnHuman(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height) {
+	Human h;
+	h.SetSize(width, height);
+	h.SetPosition(x, y);
+	h.GetSprite()->texture = GUI::gui->LoadTexture(L"resources/sprites/SpriteTest.jpg");
+	h.set_time_left(0);
+	h.SetType(GameObjectType_Human);
+	objects.push_back(h);
+}
+
+void SpawnVFXFireball(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height) {
+	VFX explosion;
+	explosion.nAttributes["type"] = VFXType_Fireball;
+	explosion.SetType(GameObjectType_VFX);
+
+	explosion.SetSize(50, 50);
+	explosion.SetPosition(50, 50);
+
+
+	explosion.GetSprite()->texture = GUI::gui->LoadTexture(VFXTextures[explosion.get_vfx_type()][0]);
+	std::vector< LPDIRECT3DTEXTURE9>aniTexs;
+	aniTexs.reserve(VFXTextures[explosion.get_vfx_type()].size());
+	for (int i = 0; i < VFXTextures[explosion.get_vfx_type()].size(); i++) {
+		LPCWSTR string = VFXTextures[explosion.get_vfx_type()][i];
+		aniTexs.push_back(GUI::gui->LoadTexture(string));
+	}
+	std::vector<std::chrono::milliseconds>aniDelays;
+	aniDelays.reserve(aniTexs.size());
+	for (int i = 0; i < aniTexs.size(); i++)
+		aniDelays.push_back(std::chrono::milliseconds(80));
+	explosion.GetSprite()->Animations["default"] = Animation(aniTexs, aniDelays);
+	objects.push_back(explosion);
+	objects.back().GetSprite()->StartAnimation("default");
+}
+
 inline void GameLoop(Game* game) {
 	// Part 1 Logic
 	//
@@ -12,15 +68,11 @@ inline void GameLoop(Game* game) {
 	static bool press = false;
 	// This is a Animation Test
 	{
+		
 		if (FloodGui::Context.IO.MouseInput[FloodMouseButton::FloodGuiButton_LeftMouse] && !press) {
 			press = true;
-			Human h;
-			h.SetSize(140, 140);
-			h.SetPosition(50, 50);
-			h.GetSprite()->texture = GUI::gui->LoadTexture(GAME_BKG_FILENAME);
-			h.set_time_left(0);
-			h.SetType(GameObjectType_Human);
-			objects.push_back(h);
+			
+			SpawnHuman(objects, 100, 100, 150 , 150);
 		}
 		else if (!FloodGui::Context.IO.MouseInput[FloodMouseButton::FloodGuiButton_LeftMouse]) {
 			press = false;
@@ -44,30 +96,7 @@ inline void GameLoop(Game* game) {
 					/*
 					 VISUAL EFFECTS
 					*/
-					{
-						SFX explosion;
-						explosion.nAttributes["type"] = SFXType_Fireball;
-						explosion.SetType(GameObjectType_SFX);
-
-						explosion.SetSize(140, 140);
-						explosion.SetPosition(50, 50);
-
-
-						explosion.GetSprite()->texture = GUI::gui->LoadTexture(SFXTextures[explosion.get_sfx_type()][0]);
-						std::vector< LPDIRECT3DTEXTURE9>aniTexs;
-						aniTexs.reserve(SFXTextures[explosion.get_sfx_type()].size());
-						for (int i = 0; i < SFXTextures[explosion.get_sfx_type()].size(); i++) {
-							LPCWSTR string = SFXTextures[explosion.get_sfx_type()][i];
-							aniTexs.push_back(GUI::gui->LoadTexture(string));
-						}
-						std::vector<std::chrono::milliseconds>aniDelays;
-						aniDelays.reserve(aniTexs.size());
-						for (int i = 0; i < aniTexs.size(); i++)
-							aniDelays.push_back(std::chrono::milliseconds(80));
-						explosion.GetSprite()->Animations["default"] = Animation(aniTexs, aniDelays);
-						objects.push_back(explosion);
-						objects.back().GetSprite()->StartAnimation("default");
-					}
+					SpawnVFXFireball(objects, human->GetSprite()->x, human->GetSprite()->y, 50, 50);
 
 					/*
 					DROP ORGAN
@@ -92,13 +121,13 @@ inline void GameLoop(Game* game) {
 				}
 				break;
 			}
-			case GameObjectType_SFX: {
-				SFX* sfx = reinterpret_cast<SFX*>(&obj);
+			case GameObjectType_VFX: {
+				VFX* vfx = reinterpret_cast<VFX*>(&obj);
 				// Run though / update each animation frame if possible
 
-				sfx->GetSprite()->UpdateAnimation();
+				vfx->GetSprite()->UpdateAnimation();
 				// If this animaiton ends then BYE BYE!!
-				if (!sfx->GetSprite()->inAnimation)
+				if (!vfx->GetSprite()->inAnimation)
 					objects.erase(objects.begin() + j);
 				break;
 			}
@@ -117,7 +146,14 @@ inline void GameLoop(Game* game) {
 			{
 				LivingSpace* livingspace = reinterpret_cast<LivingSpace*>(&obj);
 
+				if (livingspace->get_space_type() == LivingSpaceType_None)
+					break;
+
+				bool buttonPressed = false;
 				// While Button is not held refill current_capacity to full
+				if (!buttonPressed) {
+					//livingspace->set_current_capacity();
+				}
 
 				// While Button is held decrease curret_capacity
 				// Spawm Humans
@@ -132,6 +168,11 @@ inline void GameLoop(Game* game) {
 				// organs check which ones are in the radius
 				// then yoink them.
 
+				ufo->GetSprite()->UpdateAnimation();
+
+				if (!ufo->GetSprite()->inAnimation)
+					ufo->GetSprite()->StartAnimation("default");				
+				
 				break;
 			}
 			
@@ -154,7 +195,7 @@ inline void GameLoop(Game* game) {
 
 		4. Draw Humans
 		
-		5. SFX
+		5. VFX
 
 		5. Draw UFOs
 	*/
@@ -172,25 +213,25 @@ inline void GameLoop(Game* game) {
 				const GameObjectType& type1 = obj1.GetType();
 				const GameObjectType& type2 = obj2.GetType();
 
-				if (type2 == GameObjectType_None && (type1 == GameObjectType_LivingSpace || type1 == GameObjectType_Organ || type1 == GameObjectType_Human || type1 == GameObjectType_UFOCollector || type1 == GameObjectType_SFX)) {
+				if (type2 == GameObjectType_None && (type1 == GameObjectType_LivingSpace || type1 == GameObjectType_Organ || type1 == GameObjectType_Human || type1 == GameObjectType_UFOCollector || type1 == GameObjectType_VFX)) {
 					sort = true;
 					std::swap(obj1, obj2);
 					break;
 				}
 
-				if (type2 == GameObjectType_LivingSpace && (type1 == GameObjectType_Organ || type1 == GameObjectType_Human || type1 == GameObjectType_UFOCollector || type1 == GameObjectType_SFX)) {
+				if (type2 == GameObjectType_LivingSpace && (type1 == GameObjectType_Organ || type1 == GameObjectType_Human || type1 == GameObjectType_UFOCollector || type1 == GameObjectType_VFX)) {
 					sort = true;
 					std::swap(obj1, obj2);
 					break;
 				}
 
-				if (type2 == GameObjectType_Organ && (type1 == GameObjectType_Human || type1 == GameObjectType_UFOCollector || type1 == GameObjectType_SFX)) {
+				if (type2 == GameObjectType_Organ && (type1 == GameObjectType_Human || type1 == GameObjectType_UFOCollector || type1 == GameObjectType_VFX)) {
 					sort = true;
 					std::swap(obj1, obj2);
 					break;
 				}
 
-				if (type2 == GameObjectType_SFX && (type1 == GameObjectType_Human || type1 == GameObjectType_UFOCollector)) {
+				if (type2 == GameObjectType_VFX && (type1 == GameObjectType_Human || type1 == GameObjectType_UFOCollector)) {
 					sort = true;
 					std::swap(obj1, obj2);
 					break;
@@ -205,8 +246,18 @@ inline void GameLoop(Game* game) {
 		}
 	}
 	FloodDrawList* drawList = FloodGui::Context.GetBackgroundDrawList();
+	static int frame = 0;
+	static std::chrono::milliseconds lastFrame = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+	std::chrono::milliseconds now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 
-	drawList->AddRectFilled(FloodVector2(), FloodGui::Context.Display.DisplaySize, FloodColor(1.f, 1.f, 1.f), GUI::gui->LoadTexture(GAME_BKG_FILENAME));
+	if (now - std::chrono::milliseconds(270) >= lastFrame) {
+		frame++;
+		lastFrame = now;
+	}
+	if (frame >= BackgroundFrames.size())
+		frame = 0;
+	drawList->AddRectFilled(FloodVector2(), FloodGui::Context.Display.DisplaySize, FloodColor(1.f, 1.f, 1.f), GUI::gui->LoadTexture(BackgroundFrames[frame]));
+	
 	for (GameObject& obj : objects) {
 		Sprite* sprite = obj.GetSprite();
 		if (obj.GetType() == GameObjectType_None || !sprite->texture)

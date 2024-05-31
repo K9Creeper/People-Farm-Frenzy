@@ -51,8 +51,11 @@ static std::unordered_map<LivingSpaceTypes, LPCWSTR>LivingSpaceTextures{
 };
 
 class LivingSpace : public GameObject {
+public:
 	std::string get_space_name() { return LivingSpaceNames[get_space_type()]; }
 	LivingSpaceTypes get_space_type() { return (LivingSpaceTypes)nAttributes["type"]; }
 	int get_max_capacity() { return LivingSpaceCapacity[get_space_type()]; }
 	int get_current_capacity() { return nAttributes["current_capacity"]; }
+	void set_current_capacity(const int& cap) { nAttributes["current_capacity"] = cap; }
+
 };

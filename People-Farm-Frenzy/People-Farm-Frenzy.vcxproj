@@ -157,7 +157,7 @@
     <ClInclude Include="game\object\livingspace\livingspace.h" />
     <ClInclude Include="game\object\object.h" />
     <ClInclude Include="game\object\organ\organ.h" />
-    <ClInclude Include="game\object\sfx\sfx.h" />
+    <ClInclude Include="game\object\vfx\vfx.h" />
     <ClInclude Include="game\object\UFO\UFO.h" />
     <ClInclude Include="gui\d3dx9\Include\d2d1.h" />
     <ClInclude Include="gui\d3dx9\Include\d2d1effectauthor.h" />
@@ -264,7 +264,23 @@
     <Image Include="resources\sprites\fireball\frame_07_delay-0.08s.png" />
     <Image Include="resources\sprites\fireball\frame_08_delay-0.08s.png" />
     <Image Include="resources\sprites\fireball\frame_09_delay-0.08s.png" />
+    <Image Include="resources\sprites\map\map_0.png" />
+    <Image Include="resources\sprites\map\map_1.png" />
+    <Image Include="resources\sprites\map\map_2.png" />
+    <Image Include="resources\sprites\map\map_3.png" />
     <Image Include="resources\sprites\SpriteTest.jpg" />
+    <Image Include="resources\sprites\ufo\sprite_0.png" />
+    <Image Include="resources\sprites\ufo\sprite_1.png" />
+    <Image Include="resources\sprites\ufo\sprite_10.png" />
+    <Image Include="resources\sprites\ufo\sprite_11.png" />
+    <Image Include="resources\sprites\ufo\sprite_2.png" />
+    <Image Include="resources\sprites\ufo\sprite_3.png" />
+    <Image Include="resources\sprites\ufo\sprite_4.png" />
+    <Image Include="resources\sprites\ufo\sprite_5.png" />
+    <Image Include="resources\sprites\ufo\sprite_6.png" />
+    <Image Include="resources\sprites\ufo\sprite_7.png" />
+    <Image Include="resources\sprites\ufo\sprite_8.png" />
+    <Image Include="resources\sprites\ufo\sprite_9.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gui\d3dx9\Include\d3dvec.inl" />
