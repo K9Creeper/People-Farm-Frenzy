@@ -11,14 +11,13 @@
 #include "object/vfx/vfx.h"
 
 static std::vector<LPCWSTR>BackgroundFrames{
-	L"resources/sprites/map/map_0.png", L"resources/sprites/map/map_1.png", L"resources/sprites/map/map_2.png", L"resources/sprites/map/map_3.png",
-
+	L"resources/sprites/map/map.png"
 };
 
 struct GameData {
 	uint64_t Glorbux = 0;
 
-	Upgrade<LivingSpace> LivingSpaceUpgrades[4]{ };
+	Upgrade<LivingSpace> LivingSpaceUpgrades[3]{ };
 	
 	Upgrade<double> ButtonMultiplier{ 1.0 };
 	Upgrade<double> LivingSpaceRefillMultiplier{ 1.0 };

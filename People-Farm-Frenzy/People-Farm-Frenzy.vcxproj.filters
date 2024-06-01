@@ -349,36 +349,6 @@
     <Image Include="resources\sprites\SpriteTest.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\sprites\fireball\frame_01_delay-0.08s.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\fireball\frame_00_delay-0.08s.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\fireball\frame_02_delay-0.08s.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\fireball\frame_03_delay-0.08s.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\fireball\frame_04_delay-0.08s.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\fireball\frame_05_delay-0.08s.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\fireball\frame_07_delay-0.08s.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\fireball\frame_06_delay-0.08s.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\fireball\frame_09_delay-0.08s.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\fireball\frame_08_delay-0.08s.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="resources\sprites\ufo\sprite_0.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -415,18 +385,6 @@
     <Image Include="resources\sprites\ufo\sprite_11.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\sprites\map\map_0.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\map\map_1.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\map\map_3.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\map\map_2.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="resources\sprites\organs\brain.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -452,6 +410,51 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="resources\sprites\organs\stomach.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\BloodCloud\frame_0_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\BloodCloud\frame_1_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\BloodCloud\frame_2_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\BloodCloud\frame_3_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\BloodCloud\frame_4_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\BloodCloud\frame_5_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\BloodCloud\frame_6_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\BloodCloud\frame_7_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\BloodCloud\frame_8_delay-0.08s.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\map\map.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\magma\frame1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\magma\frame2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\magma\frame3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\magma\frame4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\magma\frame5.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

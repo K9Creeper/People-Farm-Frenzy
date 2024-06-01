@@ -35,9 +35,9 @@ void SpawnHuman(std::vector<GameObject>& objects, const int& x, const int& y, co
 	objects.push_back(h);
 }
 
-void SpawnVFXFireball(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height) {
+void SpawnVFXBloodCloud(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height) {
 	VFX explosion;
-	explosion.nAttributes["type"] = VFXType_Fireball;
+	explosion.nAttributes["type"] = VFXType_BloodCloud;
 	explosion.SetType(GameObjectType_VFX);
 
 	explosion.SetSize(width, height);
@@ -60,6 +60,64 @@ void SpawnVFXFireball(std::vector<GameObject>& objects, const int& x, const int&
 	objects.back().GetSprite()->StartAnimation("default");
 }
 
+Organ drop_new_organ(const int& x, const int& y, const int& width, const int& height) {
+	double random = static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+
+	Organ organ;
+	organ.SetType(GameObjectType_Organ);
+	double Chance = 1.f;
+
+	if (random <= Chance) {
+		organ.nAttributes["type"] = OrganType_Brain;
+	}
+	Chance -= OrganChances[OrganType_Brain];
+	if (random <= Chance) {
+		organ.nAttributes["type"] = OrganType_Heart;
+
+	}
+	Chance -= OrganChances[OrganType_Heart];
+	if (random <= Chance) {
+		organ.nAttributes["type"] = OrganType_Lung;
+
+	}
+	Chance -= OrganChances[OrganType_Lung];
+	if (random <= Chance) {
+		organ.nAttributes["type"] = OrganType_Kidney;
+
+	}
+	Chance -= OrganChances[OrganType_Kidney];
+	if (random <= Chance) {
+		organ.nAttributes["type"] = OrganType_Eyeball;
+
+	}
+	Chance -= OrganChances[OrganType_Eyeball];
+	if (random <= Chance) {
+		organ.nAttributes["type"] = OrganType_Intestine;
+
+	}
+	Chance -= OrganChances[OrganType_Intestine];
+	if (random <= Chance) {
+		organ.nAttributes["type"] = OrganType_Stomach;
+	}
+	Chance -= OrganChances[OrganType_Stomach];
+	if (random <= Chance) {
+		organ.nAttributes["type"] = OrganType_Skin;
+	}
+	Chance -= OrganChances[OrganType_Skin];
+	if (random <= Chance) {
+		organ.nAttributes["type"] = OrganType_Skull;
+	}
+	Chance -= OrganChances[OrganType_Skull];
+
+	organ.SetSize(width, height);
+	organ.SetPosition(x, y);
+
+	organ.nAttributes["value"] = OrganValues[(OrganTypes)organ.nAttributes["type"]];
+	organ.sAttributes["name"] = OrganNames[(OrganTypes)organ.nAttributes["type"]];
+
+	return organ;
+}
+
 inline void GameLoop(Game* game) {
 	// Part 1 Logic
 	//
@@ -72,7 +130,7 @@ inline void GameLoop(Game* game) {
 		if (FloodGui::Context.IO.MouseInput[FloodMouseButton::FloodGuiButton_LeftMouse] && !press) {
 			press = true;
 			
-			SpawnHuman(objects, 500, 500, 50 , 50);
+			SpawnHuman(objects, 500, 500, 80 , 80);
 		}
 		else if (!FloodGui::Context.IO.MouseInput[FloodMouseButton::FloodGuiButton_LeftMouse]) {
 			press = false;
@@ -101,18 +159,9 @@ inline void GameLoop(Game* game) {
 					human->set_exploded();
 
 					/*
-					DROP ORGAN
-					*/
-					{
-						Organ newOrgan = human->drop_new_organ(pos.x, pos.y, 15, 15);
-						newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
-						objects.push_back(newOrgan);
-					}
-
-					/*
 					 VISUAL EFFECTS
 					*/
-					SpawnVFXFireball(objects, pos.x, pos.y, 55, 55);
+					SpawnVFXBloodCloud(objects, pos.x, pos.y, 95, 95);
 				}
 				else {
 					// Make them run to a certian place!
@@ -127,8 +176,15 @@ inline void GameLoop(Game* game) {
 
 				vfx->GetSprite()->UpdateAnimation();
 				// If this animaiton ends then BYE BYE!!
-				if (!vfx->GetSprite()->inAnimation)
+				if (!vfx->GetSprite()->inAnimation) {
+					if (vfx->get_vfx_type() == VFXType_BloodCloud)
+					{
+						Organ newOrgan = drop_new_organ(pos.x, pos.y, 40, 40);
+						newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
+						objects.push_back(newOrgan);
+					}
 					objects.erase(objects.begin() + j);
+				}
 				break;
 			}
 			case GameObjectType_Organ:
@@ -143,6 +199,10 @@ inline void GameLoop(Game* game) {
 				if (FloodGui::Context.IO.mouse_pos.x >= organ->GetSprite()->left && FloodGui::Context.IO.mouse_pos.x <= organ->GetSprite()->right && FloodGui::Context.IO.mouse_pos.y >= organ->GetSprite()->top && FloodGui::Context.IO.mouse_pos.y <= organ->GetSprite()->bottom)
 				{
 					// Collect that shiii
+
+
+					// Get rid of on screen
+					objects.erase(objects.begin() + j);
 				}
 				break;
 			}
@@ -307,7 +367,7 @@ void Game::InitalizeGameData() {
 	{
 		gameData.Glorbux = 0;
 		
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 3; i++) {
 			gameData.LivingSpaceUpgrades[i].level = 0;
 			gameData.LivingSpaceUpgrades[i].levelMax = LivingSpaceNames.size() - 1;
 			gameData.LivingSpaceUpgrades[i].Value.nAttributes["type"] = LivingSpaceType_None;
@@ -323,7 +383,7 @@ void Game::InitalizeGameData() {
 void Game::InitalizeGameGraphics() {
 	// Initalize Game Data should be called before this.
 	//
-	GUI::window = new Window(800, 700);
+	GUI::window = new Window(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
 	GUI::gui = new Gui(GUI::window);
 
 	GUI::window->Initalize(GUI::gui);
