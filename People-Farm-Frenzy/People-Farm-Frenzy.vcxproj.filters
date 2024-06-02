@@ -344,6 +344,9 @@
     <ClInclude Include="game\object\vfx\vfx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="game\object\vfx\enviorment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\sprites\SpriteTest.jpg">

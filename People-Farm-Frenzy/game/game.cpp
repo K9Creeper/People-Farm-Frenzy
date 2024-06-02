@@ -30,7 +30,7 @@ void SpawnHuman(std::vector<GameObject>& objects, const int& x, const int& y, co
 	h.SetPosition(x, y);
 	h.GetSprite()->texture = GUI::gui->LoadTexture(L"resources/sprites/SpriteTest.jpg");
 	h.set_exploded(false);
-	h.set_time_left(0);
+	h.set_time_left(2500);
 	h.SetType(GameObjectType_Human);
 	objects.push_back(h);
 }
@@ -130,13 +130,14 @@ inline void GameLoop(Game* game) {
 		if (FloodGui::Context.IO.MouseInput[FloodMouseButton::FloodGuiButton_LeftMouse] && !press) {
 			press = true;
 			
-			SpawnHuman(objects, 500, 500, 80 , 80);
+			SpawnHuman(objects, FloodGui::Context.IO.mouse_pos.x, FloodGui::Context.IO.mouse_pos.y, 80 , 80);
 		}
 		else if (!FloodGui::Context.IO.MouseInput[FloodMouseButton::FloodGuiButton_LeftMouse]) {
 			press = false;
 		}
 	}
-
+	static std::chrono::milliseconds lastLoop = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+	std::chrono::milliseconds now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	for (int j = 0; j < objects.size(); j++)
 	{
 		GameObject& obj = objects[j];
@@ -167,6 +168,8 @@ inline void GameLoop(Game* game) {
 					// Make them run to a certian place!
 					//
 
+
+					human->set_time_left(human->get_time_left()-((now -lastLoop).count()));
 				}
 				break;
 			}
@@ -255,6 +258,7 @@ inline void GameLoop(Game* game) {
 				break;
 			}
 		}
+		
 	}
 	
 	// Part 2 Rendering
@@ -262,15 +266,17 @@ inline void GameLoop(Game* game) {
 	RENDER SEQ.
 		1. Draw Background / Ground
 
-		2. Draw Living Spaces
-		
-		3. Draw Organs
+		2. Draw Background / Enviorment VFX
 
-		4. Draw Humans
+		3. Draw Living Spaces
 		
-		5. VFX
+		4. Draw Organs
 
-		5. Draw UFOs
+		5. Draw Humans
+		
+		6. VFX
+
+		7. Draw UFOs
 	*/
 	
 	{
@@ -286,7 +292,13 @@ inline void GameLoop(Game* game) {
 				const GameObjectType& type1 = obj1.GetType();
 				const GameObjectType& type2 = obj2.GetType();
 
-				if (type2 == GameObjectType_None && (type1 == GameObjectType_LivingSpace || type1 == GameObjectType_Organ || type1 == GameObjectType_Human || type1 == GameObjectType_UFOCollector || type1 == GameObjectType_VFX)) {
+				if (type2 == GameObjectType_None && (type1 == GameObjectType_VFXEnviorment || type1 == GameObjectType_LivingSpace || type1 == GameObjectType_Organ || type1 == GameObjectType_Human || type1 == GameObjectType_UFOCollector || type1 == GameObjectType_VFX)) {
+					sort = true;
+					std::swap(obj1, obj2);
+					break;
+				}
+
+				if (type2 == GameObjectType_VFXEnviorment && (type1 == GameObjectType_LivingSpace || type1 == GameObjectType_Organ || type1 == GameObjectType_Human || type1 == GameObjectType_UFOCollector || type1 == GameObjectType_VFX)) {
 					sort = true;
 					std::swap(obj1, obj2);
 					break;
@@ -321,11 +333,11 @@ inline void GameLoop(Game* game) {
 	FloodDrawList* drawList = FloodGui::Context.GetBackgroundDrawList();
 	static int frame = 0;
 	static std::chrono::milliseconds lastFrame = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-	std::chrono::milliseconds now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+	std::chrono::milliseconds now2 = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 
-	if (now - std::chrono::milliseconds(280) >= lastFrame) {
+	if (now2 - std::chrono::milliseconds(280) >= lastFrame) {
 		frame++;
-		lastFrame = now;
+		lastFrame = now2;
 	}
 	if (frame >= BackgroundFrames.size())
 		frame = 0;
@@ -341,6 +353,7 @@ inline void GameLoop(Game* game) {
 		}
 		drawList->AddRectFilled(FloodVector2(sprite->left, sprite->top), FloodVector2(sprite->right, sprite->bottom), FloodColor(1.f, 1.f, 1.f), sprite->texture);
 	}
+	lastLoop = now;
 }
 
 Game::Game() {

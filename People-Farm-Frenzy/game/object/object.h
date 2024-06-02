@@ -6,6 +6,7 @@
 
 enum GameObjectType : uint16_t {
 	GameObjectType_None = 0,
+	GameObjectType_VFXEnviorment,
 	GameObjectType_Human,
 	GameObjectType_Organ,
 	GameObjectType_LivingSpace,
