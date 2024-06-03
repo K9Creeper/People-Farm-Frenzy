@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="game\game.cpp" />
+    <ClCompile Include="game\graphics\upgrade\upgrade.cpp" />
     <ClCompile Include="game\object\object.cpp" />
     <ClCompile Include="gui\floodgui\flood_gui_draw.cpp" />
     <ClCompile Include="gui\gui.cpp" />

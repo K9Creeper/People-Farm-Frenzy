@@ -33,6 +33,9 @@
     <ClCompile Include="game\game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="game\graphics\upgrade\upgrade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gui\floodgui\flood_gui.h">

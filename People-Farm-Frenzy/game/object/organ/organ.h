@@ -70,5 +70,5 @@ class Organ : public GameObject {
 public:
 	std::string get_organ_name() { return sAttributes["name"]; }
 	OrganTypes get_organ_type() { return (OrganTypes)nAttributes["type"]; }
-	float get_value() { return nAttributes["value"]; }
+	float get_value() { return OrganValues[get_organ_type()]; }
 };

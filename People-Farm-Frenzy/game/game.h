@@ -10,6 +10,8 @@
 #include "object/UFO/UFO.h"
 #include "object/vfx/vfx.h"
 
+#define ENHANCE_VFXBLOOD_CLOUDS
+
 static std::vector<LPCWSTR>BackgroundFrames{
 	L"resources/sprites/map/map.png"
 };

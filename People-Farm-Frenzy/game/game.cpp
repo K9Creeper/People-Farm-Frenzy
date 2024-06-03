@@ -60,6 +60,18 @@ void SpawnVFXBloodCloud(std::vector<GameObject>& objects, const int& x, const in
 	objects.back().GetSprite()->StartAnimation("default");
 }
 
+void SpawnVFXBloodClouds(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height, const int& offsetPer = 2) {
+	SpawnVFXBloodCloud(objects, x + offsetPer, y + offsetPer, width, height);
+	SpawnVFXBloodCloud(objects, x - offsetPer, y - offsetPer, width, height);
+	SpawnVFXBloodCloud(objects, x - offsetPer, y + offsetPer, width, height);
+	SpawnVFXBloodCloud(objects, x + offsetPer, y - offsetPer, width, height);
+
+	SpawnVFXBloodCloud(objects, x, y - offsetPer, width, height);
+	SpawnVFXBloodCloud(objects, x, y + offsetPer, width, height);
+	SpawnVFXBloodCloud(objects, x - offsetPer, y , width, height);
+	SpawnVFXBloodCloud(objects, x + offsetPer, y , width, height);
+}
+
 Organ drop_new_organ(const int& x, const int& y, const int& width, const int& height) {
 	double random = static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 
@@ -140,6 +152,7 @@ inline void GameLoop(Game* game) {
 	std::chrono::milliseconds now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	for (int j = 0; j < objects.size(); j++)
 	{
+
 		GameObject& obj = objects[j];
 		GameObjectType type = obj.GetType();
 		
@@ -162,12 +175,21 @@ inline void GameLoop(Game* game) {
 					/*
 					 VISUAL EFFECTS
 					*/
-					SpawnVFXBloodCloud(objects, pos.x, pos.y, 95, 95);
+
+					#ifdef ENHANCE_VFXBLOOD_CLOUDS
+						SpawnVFXBloodClouds(objects, pos.x, pos.y, 95, 95);
+					#else
+						SpawnVFXBloodCloud(objects, pos.x, pos.y, 95, 95);
+					#endif // ENHANCE_VFXBLOOD_CLOUDS
+					
+					Organ newOrgan = drop_new_organ(pos.x, pos.y, 40, 40);
+					newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
+					objects.push_back(newOrgan);
 				}
 				else {
 					// Make them run to a certian place!
 					//
-
+					human->SetPosition(human->GetSprite()->x + 1, human->GetSprite()->y + 1);
 
 					human->set_time_left(human->get_time_left()-((now -lastLoop).count()));
 				}
@@ -182,9 +204,7 @@ inline void GameLoop(Game* game) {
 				if (!vfx->GetSprite()->inAnimation) {
 					if (vfx->get_vfx_type() == VFXType_BloodCloud)
 					{
-						Organ newOrgan = drop_new_organ(pos.x, pos.y, 40, 40);
-						newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
-						objects.push_back(newOrgan);
+						
 					}
 					objects.erase(objects.begin() + j);
 				}
@@ -202,7 +222,8 @@ inline void GameLoop(Game* game) {
 				if (FloodGui::Context.IO.mouse_pos.x >= organ->GetSprite()->left && FloodGui::Context.IO.mouse_pos.x <= organ->GetSprite()->right && FloodGui::Context.IO.mouse_pos.y >= organ->GetSprite()->top && FloodGui::Context.IO.mouse_pos.y <= organ->GetSprite()->bottom)
 				{
 					// Collect that shiii
-
+					const float& price = organ->get_value();
+					
 
 					// Get rid of on screen
 					objects.erase(objects.begin() + j);
@@ -330,6 +351,7 @@ inline void GameLoop(Game* game) {
 			}
 		}
 	}
+
 	FloodDrawList* drawList = FloodGui::Context.GetBackgroundDrawList();
 	static int frame = 0;
 	static std::chrono::milliseconds lastFrame = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
