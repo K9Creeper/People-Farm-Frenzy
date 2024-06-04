@@ -36,6 +36,12 @@
     <ClCompile Include="game\graphics\upgrade\upgrade.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="game\graphics\interact\interact.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game\soundsystem\soundsystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gui\floodgui\flood_gui.h">
@@ -350,6 +356,12 @@
     <ClInclude Include="game\object\vfx\enviorment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="game\graphics\interact\interact.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game\soundsystem\soundsystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\sprites\SpriteTest.jpg">
@@ -463,6 +475,15 @@
     <Image Include="resources\sprites\magma\frame5.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\sprites\fire\frame1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\fire\frame2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\personicon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="gui\d3dx9\Include\d3dvec.inl">
@@ -480,5 +501,27 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="gui\d3dx9\Lib\x64\d3dx9.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="resources\sounds\siren\eerie-low-siren-fx.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="resources\sounds\siren\purge-siren-fx_129bpm (1).wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="resources\sounds\siren\purge-siren-fx_129bpm.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="resources\sounds\siren\scary-laugh-fx.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="resources\sounds\siren\scary-alarm-siren-fx_7bpm.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="resources\sounds\siren\siren-reverb-fx_165bpm.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="resources\sounds\sfx\explosion.mp3" />
+    <Media Include="resources\sounds\music\black-hawk-light-cinematic-background-music-for-drama-video-40-second-202452.mp3" />
   </ItemGroup>
 </Project>

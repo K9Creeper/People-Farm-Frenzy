@@ -121,7 +121,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d9.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>WINMM.lib;d3d9.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,8 +142,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="game\game.cpp" />
+    <ClCompile Include="game\graphics\interact\interact.cpp" />
     <ClCompile Include="game\graphics\upgrade\upgrade.cpp" />
     <ClCompile Include="game\object\object.cpp" />
+    <ClCompile Include="game\soundsystem\soundsystem.cpp" />
     <ClCompile Include="gui\floodgui\flood_gui_draw.cpp" />
     <ClCompile Include="gui\gui.cpp" />
     <ClCompile Include="gui\window\window.cpp" />
@@ -152,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="game\game.h" />
     <ClInclude Include="game\graphics\animation\animation.h" />
+    <ClInclude Include="game\graphics\interact\interact.h" />
     <ClInclude Include="game\graphics\sprite\sprite.h" />
     <ClInclude Include="game\graphics\upgrade\upgrade.h" />
     <ClInclude Include="game\object\vfx\enviorment.h" />
@@ -161,6 +164,7 @@
     <ClInclude Include="game\object\organ\organ.h" />
     <ClInclude Include="game\object\vfx\vfx.h" />
     <ClInclude Include="game\object\UFO\UFO.h" />
+    <ClInclude Include="game\soundsystem\soundsystem.h" />
     <ClInclude Include="gui\d3dx9\Include\d2d1.h" />
     <ClInclude Include="gui\d3dx9\Include\d2d1effectauthor.h" />
     <ClInclude Include="gui\d3dx9\Include\d2d1effectauthor_1.h" />
@@ -265,6 +269,8 @@
     <Image Include="resources\sprites\BloodCloud\frame_6_delay-0.08s.png" />
     <Image Include="resources\sprites\BloodCloud\frame_7_delay-0.08s.png" />
     <Image Include="resources\sprites\BloodCloud\frame_8_delay-0.08s.png" />
+    <Image Include="resources\sprites\fire\frame1.png" />
+    <Image Include="resources\sprites\fire\frame2.png" />
     <Image Include="resources\sprites\magma\frame1.png" />
     <Image Include="resources\sprites\magma\frame2.png" />
     <Image Include="resources\sprites\magma\frame3.png" />
@@ -280,6 +286,7 @@
     <Image Include="resources\sprites\organs\skin.png" />
     <Image Include="resources\sprites\organs\skull.png" />
     <Image Include="resources\sprites\organs\stomach.png" />
+    <Image Include="resources\sprites\personicon.png" />
     <Image Include="resources\sprites\SpriteTest.jpg" />
     <Image Include="resources\sprites\ufo\sprite_0.png" />
     <Image Include="resources\sprites\ufo\sprite_1.png" />
@@ -302,6 +309,16 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="gui\d3dx9\Lib\x64\d3dx9.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="resources\sounds\music\black-hawk-light-cinematic-background-music-for-drama-video-40-second-202452.mp3" />
+    <Media Include="resources\sounds\sfx\explosion.mp3" />
+    <Media Include="resources\sounds\siren\eerie-low-siren-fx.wav" />
+    <Media Include="resources\sounds\siren\purge-siren-fx_129bpm (1).wav" />
+    <Media Include="resources\sounds\siren\purge-siren-fx_129bpm.wav" />
+    <Media Include="resources\sounds\siren\scary-alarm-siren-fx_7bpm.wav" />
+    <Media Include="resources\sounds\siren\scary-laugh-fx.wav" />
+    <Media Include="resources\sounds\siren\siren-reverb-fx_165bpm.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

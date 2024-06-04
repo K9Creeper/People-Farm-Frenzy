@@ -490,7 +490,7 @@ void FloodGui::BeginWindow(const char* windowName, bool shouldDraw)
                         FloodVector2 new_size = (window->GetBoundingContentMax() - window->GetBoundingContentMin()) + dst;
                         // Lets have a minimum size for our window
                         // it will not behave nicely otherwise
-                        if (new_size.x > 500 && new_size.y > 500) {
+                        if (new_size.x > 100 && new_size.y > 100) {
                             window->ResizeWindow(new_size);
                         }
                         else {

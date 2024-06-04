@@ -3,6 +3,9 @@
 #include "../gui/gui.h"
 #include "../gui/window/window.h"
 
+#include "graphics/interact/interact.h"
+#include "soundsystem/soundsystem.h"
+
 void SpawnUFO(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height)
 {
 	UFO h;
@@ -136,16 +139,11 @@ inline void GameLoop(Game* game) {
 	std::vector<GameObject>& objects = game->GetGameObjects();
 	GameData* gameData = game->GetGameData();
 
-	static bool press = false;
+	bool press = Graphics::DrawTextureButton(L"resources/sprites/personicon.png", 100, 100, 200,  100, FloodColor(241, 11, 13, 255), 150, 100, 100, 100);
 	// This is a Animation Test
 	{
-		if (FloodGui::Context.IO.MouseInput[FloodMouseButton::FloodGuiButton_LeftMouse] && !press) {
-			press = true;
-			
-			SpawnHuman(objects, FloodGui::Context.IO.mouse_pos.x, FloodGui::Context.IO.mouse_pos.y, 80 , 80);
-		}
-		else if (!FloodGui::Context.IO.MouseInput[FloodMouseButton::FloodGuiButton_LeftMouse]) {
-			press = false;
+		if (press) {
+			SpawnHuman(objects, 500, 500, 80 , 80);
 		}
 	}
 	static std::chrono::milliseconds lastLoop = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
@@ -181,7 +179,8 @@ inline void GameLoop(Game* game) {
 					#else
 						SpawnVFXBloodCloud(objects, pos.x, pos.y, 95, 95);
 					#endif // ENHANCE_VFXBLOOD_CLOUDS
-					
+						// https://stackoverflow.com/questions/36313554/how-to-play-two-or-more-sounds-at-the-same-time
+					std::thread([&]() { SoundSystem::Play(L"resources/sounds/sfx/explosion.wav", SND_NOWAIT | SND_ASYNC | SND_FILENAME); }).detach();
 					Organ newOrgan = drop_new_organ(pos.x, pos.y, 40, 40);
 					newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
 					objects.push_back(newOrgan);
@@ -371,10 +370,11 @@ inline void GameLoop(Game* game) {
 			continue;
 		if (obj.GetType() == GameObjectType_Organ)
 		{
-
+			// Bob animation??
 		}
 		drawList->AddRectFilled(FloodVector2(sprite->left, sprite->top), FloodVector2(sprite->right, sprite->bottom), FloodColor(1.f, 1.f, 1.f), sprite->texture);
 	}
+
 	lastLoop = now;
 }
 
