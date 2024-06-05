@@ -37,6 +37,7 @@ private:
 public:
 	void InitalizeGameData();
 	void InitalizeGameGraphics();
+	void InitalizeGameSound();
 
 	std::vector<GameObject>& GetGameObjects();
 	GameData* GetGameData();

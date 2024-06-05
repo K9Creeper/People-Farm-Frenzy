@@ -17,5 +17,3 @@ struct Upgrade {
 
 	upgrade_handle_fn upgradeHandle;
 };
-
-

@@ -30,6 +30,25 @@ HRESULT SoundSystem::Init() {
 		return hr;
 }
 
+void SoundSystem::Release() {
+    for (auto& [src, s] : Sources)
+        delete s;
+    Sources.clear();
+    for (IXAudio2SourceVoice* audio : Audio) {
+        audio->Stop();
+        audio->DestroyVoice();
+        audio = nullptr;
+    }
+    Audio.clear();
+
+    pMasterVoice->DestroyVoice();
+    delete pMasterVoice;
+
+    // Who cares about memory
+    //pXAudio2->Release();
+    //pXAudio2 = nullptr;
+}
+
 /* https://learn.microsoft.com/en-us/windows/win32/xaudio2/how-to--load-audio-data-files-in-xaudio2 */
 HRESULT FindChunk(HANDLE hFile, DWORD fourcc, DWORD& dwChunkSize, DWORD& dwChunkDataPosition)
 {
@@ -98,16 +117,9 @@ HRESULT ReadChunkData(HANDLE hFile, void* buffer, DWORD buffersize, DWORD buffer
 }
 
 SoundSystem::SoundSystem(){}
-SoundSystem::~SoundSystem() { 
-    pXAudio2->Release(); pXAudio2 = nullptr; 
-  
-    delete pMasterVoice; pMasterVoice = nullptr;
-    for (auto& [src, s] : Sources)
-        delete s;
-    Sources.clear();
-    for (IXAudio2SourceVoice* audio : Audio)
-        delete audio;
-    Audio.clear();
+SoundSystem::~SoundSystem() {
+    if(pXAudio2)
+        Release();
 }
 
 XAudio SoundSystem::CreateAudio(LPCWSTR src)
@@ -147,6 +159,21 @@ XAudio SoundSystem::CreateAudio(LPCWSTR src)
     return out;
 }
 
+void SoundSystem::ValidtateAudio() {
+    for (int i = 0; i < Audio.size(); i++)
+    {
+        static XAUDIO2_VOICE_STATE state;
+        Audio[i]->GetState(&state);
+        if (state.SamplesPlayed == 0)
+        {
+            Audio[i]->Stop(XAUDIO2_PLAY_TAILS);
+            Audio[i]->DestroyVoice();
+            Audio[i] = nullptr;
+
+        }
+    }
+}
+
 void SoundSystem::AddAudio(LPCWSTR src, XAudio* AUD) {
     XAudio* audio = AUD;
     if (!audio)
@@ -156,14 +183,14 @@ void SoundSystem::AddAudio(LPCWSTR src, XAudio* AUD) {
     Sources[src] = audio;
 }
 
-HRESULT SoundSystem::PlayAudio(LPCWSTR src) {
+HRESULT SoundSystem::PlayAudio(LPCWSTR src, const float& volume) {
     if (Sources.find(src) == Sources.end())
         AddAudio(src);
     XAudio* audio = Sources[src];
-    return PlayAudio(audio);
+    return PlayAudio(audio, volume);
 }
 
-HRESULT SoundSystem::PlayAudio(XAudio* audio) {
+HRESULT SoundSystem::PlayAudio(XAudio* audio, const float& volume) {
     if (!audio)
         return S_FALSE;
     IXAudio2SourceVoice* pSourceVoice;

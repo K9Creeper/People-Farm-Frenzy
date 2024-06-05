@@ -382,12 +382,11 @@ inline void GameLoop(Game* game) {
 }
 
 Game::Game() {
-	soundSystem = new SoundSystem();
-	soundSystem->Init();
+	
 }
 
 Game::~Game() {
-	delete soundSystem;
+
 }
 
 void Game::InitalizeGameData() {
@@ -417,6 +416,11 @@ void Game::InitalizeGameData() {
 	}
 
 	std::srand(time(NULL));
+}
+
+void Game::InitalizeGameSound() {
+	soundSystem = new SoundSystem();
+	soundSystem->Init();
 }
 
 void Game::InitalizeGameGraphics() {
