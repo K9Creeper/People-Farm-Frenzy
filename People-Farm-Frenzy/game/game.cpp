@@ -179,8 +179,11 @@ inline void GameLoop(Game* game) {
 					#else
 						SpawnVFXBloodCloud(objects, pos.x, pos.y, 95, 95);
 					#endif // ENHANCE_VFXBLOOD_CLOUDS
-						// https://stackoverflow.com/questions/36313554/how-to-play-two-or-more-sounds-at-the-same-time
-					std::thread([&]() { SoundSystem::Play(L"resources/sounds/sfx/explosion.wav", SND_NOWAIT | SND_ASYNC | SND_FILENAME); }).detach();
+
+					// Lol Funny <3 Bert
+					soundSystem->PlayAudio(L"resources/sounds/music/BYEBYE.wav");
+					
+
 					Organ newOrgan = drop_new_organ(pos.x, pos.y, 40, 40);
 					newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
 					objects.push_back(newOrgan);
@@ -379,11 +382,12 @@ inline void GameLoop(Game* game) {
 }
 
 Game::Game() {
-
+	soundSystem = new SoundSystem();
+	soundSystem->Init();
 }
 
 Game::~Game() {
-
+	delete soundSystem;
 }
 
 void Game::InitalizeGameData() {

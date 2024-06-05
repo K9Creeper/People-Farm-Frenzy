@@ -1,5 +1,7 @@
 #include "soundsystem.h"
 
+#include <iostream>
+
 #ifdef _XBOX //Big-Endian
 #define fourccRIFF 'RIFF'
 #define fourccDATA 'data'
@@ -95,6 +97,19 @@ HRESULT ReadChunkData(HANDLE hFile, void* buffer, DWORD buffersize, DWORD buffer
 	return hr;
 }
 
+SoundSystem::SoundSystem(){}
+SoundSystem::~SoundSystem() { 
+    pXAudio2->Release(); pXAudio2 = nullptr; 
+  
+    delete pMasterVoice; pMasterVoice = nullptr;
+    for (auto& [src, s] : Sources)
+        delete s;
+    Sources.clear();
+    for (IXAudio2SourceVoice* audio : Audio)
+        delete audio;
+    Audio.clear();
+}
+
 XAudio SoundSystem::CreateAudio(LPCWSTR src)
 {
     XAudio out;
@@ -143,43 +158,29 @@ void SoundSystem::AddAudio(LPCWSTR src, XAudio* AUD) {
 
 HRESULT SoundSystem::PlayAudio(LPCWSTR src) {
     if (Sources.find(src) == Sources.end())
-        return 1;
+        AddAudio(src);
     XAudio* audio = Sources[src];
-    IXAudio2SourceVoice* pSourceVoice;
-    HRESULT hr;
-    if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&audio->wfx)))
-    {
-        delete pSourceVoice;
-        return hr;
-    }
-    
-    if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&audio->buffer)))
-        delete pSourceVoice;
-        return hr;
-    if (FAILED(hr = pSourceVoice->Start(0))) {
-        delete pSourceVoice;
-        return hr;
-    }
-    Audio.push_back(pSourceVoice);
+    return PlayAudio(audio);
 }
 
 HRESULT SoundSystem::PlayAudio(XAudio* audio) {
     if (!audio)
-        return;
+        return S_FALSE;
     IXAudio2SourceVoice* pSourceVoice;
     HRESULT hr;
     if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&audio->wfx)))
     {
+         return hr;
+    }
+    
+    if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&audio->buffer))) {
         delete pSourceVoice;
         return hr;
     }
-
-    if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&audio->buffer)))
-        delete pSourceVoice;
-    return hr;
     if (FAILED(hr = pSourceVoice->Start(0))) {
         delete pSourceVoice;
         return hr;
     }
     Audio.push_back(pSourceVoice);
+    return S_OK;
 }

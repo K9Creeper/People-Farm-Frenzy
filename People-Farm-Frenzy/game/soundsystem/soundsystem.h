@@ -29,3 +29,5 @@ public:
 	HRESULT PlayAudio(LPCWSTR src);
 	HRESULT PlayAudio(XAudio* audio);
 };
+
+inline SoundSystem* soundSystem = nullptr;
