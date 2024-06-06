@@ -34,19 +34,17 @@ void SoundSystem::Release() {
     for (auto& [src, s] : Sources)
         delete s;
     Sources.clear();
-    for (IXAudio2SourceVoice* audio : Audio) {
-        audio->Stop();
-        audio->DestroyVoice();
-        audio = nullptr;
+    for (std::pair<IXAudio2SourceVoice*, SoundSystemSourceCallback*> pair : Audio) {
+        delete pair.second;
     }
     Audio.clear();
 
     pMasterVoice->DestroyVoice();
-    delete pMasterVoice;
 
-    // Who cares about memory
-    //pXAudio2->Release();
-    //pXAudio2 = nullptr;
+    pXAudio2->Release();
+    pXAudio2 = nullptr;
+    
+    delete pMasterVoice;
 }
 
 /* https://learn.microsoft.com/en-us/windows/win32/xaudio2/how-to--load-audio-data-files-in-xaudio2 */
@@ -159,21 +157,6 @@ XAudio SoundSystem::CreateAudio(LPCWSTR src)
     return out;
 }
 
-void SoundSystem::ValidtateAudio() {
-    for (int i = 0; i < Audio.size(); i++)
-    {
-        static XAUDIO2_VOICE_STATE state;
-        Audio[i]->GetState(&state);
-        if (state.SamplesPlayed == 0)
-        {
-            Audio[i]->Stop(XAUDIO2_PLAY_TAILS);
-            Audio[i]->DestroyVoice();
-            Audio[i] = nullptr;
-
-        }
-    }
-}
-
 void SoundSystem::AddAudio(LPCWSTR src, XAudio* AUD) {
     XAudio* audio = AUD;
     if (!audio)
@@ -190,24 +173,83 @@ HRESULT SoundSystem::PlayAudio(LPCWSTR src, const float& volume) {
     return PlayAudio(audio, volume);
 }
 
+void STDMETHODCALLTYPE SoundSystemSourceCallback::OnBufferEnd(void* pBufferContext) {
+    if (!source || !sSystem)
+        return;
+}
+void STDMETHODCALLTYPE SoundSystemSourceCallback::OnLoopEnd(void* pBufferContext)  { 
+    if (!source || !sSystem)
+        return;
+}
+void STDMETHODCALLTYPE SoundSystemSourceCallback::OnBufferStart(void* pBufferContext) {
+    if (!source || !sSystem)
+        return;
+}
+void STDMETHODCALLTYPE SoundSystemSourceCallback::OnStreamEnd() {
+    if (!source || !sSystem)
+        return;
+    std::cout << "Removed LOL\n";
+    sSystem->RemoveAudio(source);
+}
+void STDMETHODCALLTYPE SoundSystemSourceCallback::OnVoiceProcessingPassEnd() { 
+    if (!source || !sSystem)
+        return;
+}
+void STDMETHODCALLTYPE SoundSystemSourceCallback::OnVoiceProcessingPassStart(UINT32 BytesRequired) {
+    if (!source || !sSystem)
+        return;
+}
+void STDMETHODCALLTYPE SoundSystemSourceCallback::OnVoiceError(void* pBufferContext, HRESULT Error) { 
+    if (!source || !sSystem)
+        return;
+}
+
+
+void SoundSystem::RemoveAudio(IXAudio2SourceVoice* source) {
+    for (int i = 0; i < Audio.size(); i++) {
+        std::pair<IXAudio2SourceVoice*, SoundSystemSourceCallback*> pair = Audio[i];
+        if (pair.first == source) {
+            delete pair.second;
+            Audio.erase(Audio.begin() + i);
+            break;
+        }
+    }
+}
+void SoundSystem::RemoveAudio(SoundSystemSourceCallback* callback) {
+    for (int i = 0; i < Audio.size(); i++) {
+        std::pair<IXAudio2SourceVoice*, SoundSystemSourceCallback*> pair = Audio[i];
+        if (pair.second == callback) {
+            delete pair.second;
+            Audio.erase(Audio.begin() + i);
+            break;
+        }
+    }
+}
+
 HRESULT SoundSystem::PlayAudio(XAudio* audio, const float& volume) {
     if (!audio)
         return S_FALSE;
     IXAudio2SourceVoice* pSourceVoice;
+    SoundSystemSourceCallback* pCallBack = new SoundSystemSourceCallback(this);
+
     HRESULT hr;
-    if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&audio->wfx)))
+    if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&audio->wfx, 0U, 2.0F, pCallBack)))
     {
          return hr;
     }
-    
+    pCallBack->source = pSourceVoice;
+    pSourceVoice->SetVolume(volume);
     if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&audio->buffer))) {
         delete pSourceVoice;
+        delete pCallBack;
+
         return hr;
     }
     if (FAILED(hr = pSourceVoice->Start(0))) {
         delete pSourceVoice;
         return hr;
     }
-    Audio.push_back(pSourceVoice);
+    
+    Audio.push_back(std::pair{ pSourceVoice, pCallBack });
     return S_OK;
 }

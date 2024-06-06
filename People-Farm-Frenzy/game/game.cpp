@@ -180,8 +180,8 @@ inline void GameLoop(Game* game) {
 						SpawnVFXBloodCloud(objects, pos.x, pos.y, 95, 95);
 					#endif // ENHANCE_VFXBLOOD_CLOUDS
 
-					// Lol Funny <3 Bert
-					soundSystem->PlayAudio(L"resources/sounds/music/BYEBYE.wav");
+					// SFX
+					soundSystem->PlayAudio(L"resources/sounds/sfx/explosion.wav", .5f);
 					
 
 					Organ newOrgan = drop_new_organ(pos.x, pos.y, 40, 40);
