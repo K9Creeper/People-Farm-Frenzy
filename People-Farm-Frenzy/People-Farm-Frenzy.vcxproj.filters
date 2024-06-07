@@ -487,6 +487,21 @@
     <Image Include="resources\sprites\glorbuxicon.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\sprites\threelinesicon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\livingspace\duplex.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\livingspace\apartment.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\livingspace\shack.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\sprites\livingspace\house.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="gui\d3dx9\Include\d3dvec.inl">

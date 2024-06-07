@@ -272,6 +272,10 @@
     <Image Include="resources\sprites\fire\frame1.png" />
     <Image Include="resources\sprites\fire\frame2.png" />
     <Image Include="resources\sprites\glorbuxicon.png" />
+    <Image Include="resources\sprites\livingspace\apartment.png" />
+    <Image Include="resources\sprites\livingspace\duplex.png" />
+    <Image Include="resources\sprites\livingspace\house.png" />
+    <Image Include="resources\sprites\livingspace\shack.png" />
     <Image Include="resources\sprites\magma\frame1.png" />
     <Image Include="resources\sprites\magma\frame2.png" />
     <Image Include="resources\sprites\magma\frame3.png" />
@@ -289,6 +293,7 @@
     <Image Include="resources\sprites\organs\stomach.png" />
     <Image Include="resources\sprites\personicon.png" />
     <Image Include="resources\sprites\SpriteTest.jpg" />
+    <Image Include="resources\sprites\threelinesicon.png" />
     <Image Include="resources\sprites\ufo\sprite_0.png" />
     <Image Include="resources\sprites\ufo\sprite_1.png" />
     <Image Include="resources\sprites\ufo\sprite_10.png" />
