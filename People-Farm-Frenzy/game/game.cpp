@@ -5,8 +5,7 @@
 
 #include "graphics/interact/interact.h"
 #include "soundsystem/soundsystem.h"
-#include <CodeAnalysis/sourceannotations.h>
-#include <d3d9types.h>
+
 
 void SpawnUFO(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height)
 {
