@@ -498,7 +498,25 @@ inline void GameLoop(Game* game) {
 
 		// Upgrade Menu
 		{
+			static bool upgradeOpen = false;
+			static const int& width = 50;
+			static const int& height = 35;
 
+			static const int& y = 100 - height / 2.f;
+			static const int& x = FloodGui::Context.Display.DisplaySize.x - width - 30;
+
+			if (!upgradeOpen)
+			{	
+				upgradeOpen = Graphics::DrawTextureButton(L"resources/sprites/threelinesicon.png", x, y, width, height, FloodColor(1.f, 1.f, 1.f), x+(15/2.f), y, width-15, height);
+			}
+			else {
+				drawList->AddRectFilled({ FloodGui::Context.Display.DisplaySize.x - 300, static_cast<float>(y) }, FloodGui::Context.Display.DisplaySize - FloodVector2{0, static_cast<float>(y)}, FloodColor(1.f, 1.f, 1.f));
+				if(Graphics::DrawTextureButton(L"resources/sprites/threelinesicon.png", FloodGui::Context.Display.DisplaySize.x - 300, y, width, height, FloodColor(1.f, 1.f, 1.f), FloodGui::Context.Display.DisplaySize.x  - 300 + (15 / 2.f), y, width - 15, height))
+					upgradeOpen = false;
+				drawList->AddText("Upgrades", { FloodGui::Context.Display.DisplaySize.x - 300 + (15 / 2.f) + width + 5, y + height - (height / 4.f) }, FloodColor(), 15, 15);
+				// Loop through upgrades.
+
+			}
 		}
 	}
 	lastLoop = now;
