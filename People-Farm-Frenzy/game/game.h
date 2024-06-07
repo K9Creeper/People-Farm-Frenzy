@@ -24,7 +24,7 @@ struct GameData {
 	
 	Upgrade<float> OrganCollectionMultiplyer{ 1.0 };
 
-	Upgrade<double> LivingSpaceRefillMultiplier{ 1.0 };
+	Upgrade<double> LivingSpaceRefillRate{ 1.0 };
 	Upgrade<int> UFOCollectors{ 0 };
 
 	

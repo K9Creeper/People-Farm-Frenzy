@@ -21,16 +21,41 @@ enum HumanTypes : uint16_t {
 	HumanType_Girl2
 };
 
-static std::unordered_map<HumanTypes, std::vector<LPCWSTR>>HumanTextures{
-	// NUM						SRC
-	{HumanType_Bert,					{ L"c3949d6b-0202-4c4d-a703-155a46218b87-0.png"}},
-	{HumanType_Boy1,					{ L"resources/sprites/SpriteTest.jpg" } },
-	{HumanType_Boy2,					{ L"resources/sprites/SpriteTest.jpg" } },
-	{HumanType_Boy3,					{ L"resources/sprites/SpriteTest.jpg" }},
-	{HumanType_Girl1,					{ L"resources/sprites/SpriteTest.jpg" } },
-	{HumanType_Girl2,					{ L"resources/sprites/SpriteTest.jpg" } },
+static std::unordered_map<HumanTypes, LPCWSTR>HumanTextures{
+	// NUM								SRC
+	{HumanType_Bert,					L"resources/sprites/SpriteTest.jpg" },
+	{HumanType_Boy1,					L"resources/sprites/SpriteTest.jpg"},
+	{HumanType_Boy2,					L"resources/sprites/SpriteTest.jpg" },
+	{HumanType_Boy3,					L"resources/sprites/SpriteTest.jpg"},
+	{HumanType_Girl1,					L"resources/sprites/SpriteTest.jpg" },
+	{HumanType_Girl2,					L"resources/sprites/SpriteTest.jpg" },
 };
 
+static std::unordered_map <HumanTypes, double>HumanChances{
+	// NUM				CHANCE
+	{HumanType_Bert,		1.f / 100.f},
+	{HumanType_Boy1 ,		19.8f / 100.f},
+	{HumanType_Boy2 ,		19.8f / 100.f},
+	{HumanType_Boy3 ,		19.8f / 100.f},
+	{HumanType_Girl1 ,		19.8f / 100.f},
+	{HumanType_Girl2 ,		19.8f / 100.f }
+};
+
+static std::unordered_map<HumanTypes, std::unordered_map<std::string, std::vector<LPCWSTR>>>HumanAnimations{
+	{ 
+		HumanType_Bert, 
+		{
+			{"Foward", {}},
+			{"Right", {}},
+			{"Backward", {}},
+			{"Left", {}},
+			{"Neast", {}},
+			{"Seast", {}},
+			{"Nest", {}},
+			{"Sest", {}},
+		} 
+	},
+};
 
 
 class Human : public GameObject {
@@ -39,6 +64,5 @@ public:
 	void set_time_left(const int& time) { nAttributes["time_left"] = time; }
 	bool get_exploded() { return nAttributes["exploded"]; }
 	void set_exploded(bool b = true) { nAttributes["exploded"] = b; }
-	void set_human_type(const HumanTypes& type) { nAttributes["human_type"] = type; }
-	HumanTypes get_human_type() { return (HumanTypes)static_cast<int>(nAttributes["human_type"]); }
+	HumanTypes get_human_type() { return (HumanTypes)static_cast<int>(nAttributes["type"]); }
 };

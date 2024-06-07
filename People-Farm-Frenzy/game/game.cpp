@@ -32,7 +32,38 @@ void SpawnHuman(std::vector<GameObject>& objects, const int& x, const int& y, co
 	h.SetSize(width, height);
 	h.SetPosition(x, y);
 	{
-		h.GetSprite()->texture = GUI::gui->LoadTexture(L"resources/sprites/SpriteTest.jpg");
+		double random = static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+		double Chance = 1.f;
+
+		if (random <= Chance) {
+			h.nAttributes["type"] = HumanType_Bert;
+		}
+		Chance -= HumanChances[HumanType_Bert];
+		if (random <= Chance) {
+			h.nAttributes["type"] = HumanType_Boy1;
+		}
+		Chance -= HumanChances[HumanType_Boy1];
+		if (random <= Chance) {
+			h.nAttributes["type"] = HumanType_Boy2;
+
+		}
+		Chance -= HumanChances[HumanType_Boy2];
+		if (random <= Chance) {
+			h.nAttributes["type"] = HumanType_Boy3;
+
+		}
+		Chance -= HumanChances[HumanType_Boy3];
+		if (random <= Chance) {
+			h.nAttributes["type"] = HumanType_Girl1;
+
+		}
+		Chance -= HumanChances[HumanType_Girl1];
+		if (random <= Chance) {
+			h.nAttributes["type"] = HumanType_Girl2;
+		}
+		Chance -= HumanChances[HumanType_Girl2];
+
+		h.GetSprite()->texture = GUI::gui->LoadTexture(HumanTextures[h.get_human_type()]);
 	}
 	h.set_exploded(false);
 	h.set_time_left(2500);
@@ -169,7 +200,7 @@ inline void GameLoop(Game* game) {
 	bool SpawnPress = Graphics::DrawTextureButton(L"resources/sprites/personicon.png", FloodGui::Context.Display.DisplaySize.x/2.f - 300 /2.f, FloodGui::Context.Display.DisplaySize.y - 150.f, 300,  100, FloodColor(241, 11, 13, 255), FloodGui::Context.Display.DisplaySize.x / 2.f - 300 / 2.f + 100, FloodGui::Context.Display.DisplaySize.y - 150.f, 100, 100);
 	{
 		if (SpawnPress) {
-			SpawnHuman(objects, 500, 500, 80, 80);
+			SpawnHuman(objects, 500, 100, 80, 80);
 		}
 	}
 	static std::chrono::milliseconds lastLoop = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
