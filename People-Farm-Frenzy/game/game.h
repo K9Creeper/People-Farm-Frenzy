@@ -24,10 +24,14 @@ struct GameData {
 	
 	Upgrade<float> OrganCollectionMultiplyer{ 1.0 };
 
-	Upgrade<double> LivingSpaceRefillRate{ 1.0 };
+	Upgrade<float> LivingSpaceRefillRate{ 1.0 };
 	Upgrade<int> UFOCollectors{ 0 };
 
-	
+	Upgrade<float>UFOSpeed{1};
+
+	Upgrade<float>UFORadius{1};
+	Upgrade<float>SpawnRate{1};
+	Upgrade<float>OrganSpoilRate{3};	
 };
 
 class Game {
