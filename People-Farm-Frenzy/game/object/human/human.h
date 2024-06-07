@@ -70,5 +70,5 @@ public:
 		nAttributes["dest_x"] = x;
 		nAttributes["dest_y"] = y;
 	}
-	HumanTypes get_human_type() { return (HumanTypes)static_cast<int>(nAttributes["type"]); }
+	void set_human_type(HumanTypes type) { nAttributes["type"] = type; }
 };
