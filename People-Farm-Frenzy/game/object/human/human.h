@@ -64,5 +64,5 @@ public:
 	void set_time_left(const int& time) { nAttributes["time_left"] = time; }
 	bool get_exploded() { return nAttributes["exploded"]; }
 	void set_exploded(bool b = true) { nAttributes["exploded"] = b; }
-	HumanTypes get_human_type() { return (HumanTypes)static_cast<int>(nAttributes["type"]); }
+	void set_human_type(HumanTypes type) { nAttributes["type"] = (int)type; }
 };
