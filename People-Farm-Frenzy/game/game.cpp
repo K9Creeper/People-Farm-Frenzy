@@ -6,6 +6,7 @@
 #include "graphics/interact/interact.h"
 #include "soundsystem/soundsystem.h"
 
+
 void SpawnUFO(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height)
 {
 	UFO h;
@@ -35,35 +36,33 @@ void SpawnHuman(std::vector<GameObject>& objects, const int& x, const int& y, co
 		double random = static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 		double Chance = 1.f;
 
+		h.set_human_type(HumanType_Boy1);
 		if (random <= Chance) {
-			h.nAttributes["type"] = HumanType_Bert;
+			h.set_human_type(HumanType_Bert);
 		}
 		Chance -= HumanChances[HumanType_Bert];
 		if (random <= Chance) {
-			h.nAttributes["type"] = HumanType_Boy1;
+			h.set_human_type(HumanType_Boy1);
 		}
 		Chance -= HumanChances[HumanType_Boy1];
 		if (random <= Chance) {
-			h.nAttributes["type"] = HumanType_Boy2;
-
+			h.set_human_type(HumanType_Boy2);
 		}
 		Chance -= HumanChances[HumanType_Boy2];
 		if (random <= Chance) {
-			h.nAttributes["type"] = HumanType_Boy3;
-
+			h.set_human_type(HumanType_Boy3);
 		}
 		Chance -= HumanChances[HumanType_Boy3];
 		if (random <= Chance) {
-			h.nAttributes["type"] = HumanType_Girl1;
-
+			h.set_human_type(HumanType_Girl1);
 		}
 		Chance -= HumanChances[HumanType_Girl1];
 		if (random <= Chance) {
-			h.nAttributes["type"] = HumanType_Girl2;
+			h.set_human_type(HumanType_Girl2);
 		}
 		Chance -= HumanChances[HumanType_Girl2];
 
-		h.GetSprite()->texture = GUI::gui->LoadTexture(HumanTextures[h.get_human_type()]);
+		h.GetSprite()->texture = GUI::gui->LoadTexture(HumanTextures[(HumanTypes)h.nAttributes["type"]]);
 	}
 	h.set_exploded(false);
 	h.set_time_left(2500);
@@ -238,11 +237,13 @@ inline void GameLoop(Game* game) {
 						SpawnVFXBloodCloud(objects, pos.x, pos.y, 95, 95);
 					#endif // ENHANCE_VFXBLOOD_CLOUDS
 
+						HumanTypes type = HumanType_Boy1;//(HumanTypes)human->nAttributes["type"];
+
 					// SFX
-					if(true)
+					if(type != HumanType_Bert)
 						soundSystem->PlayAudio(L"resources/sounds/sfx/explosion.wav", .5f);
 					else
-						soundSystem->PlayAudio(L"resources/sounds/music/BYEBYE.wav", .5f);
+						soundSystem->PlayAudio(L"resources/sounds/music/BYEBYE.wav", .3f);
 
 					Organ newOrgan = drop_new_organ(pos.x, pos.y, 40, 40);
 					newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
@@ -472,9 +473,12 @@ inline void GameLoop(Game* game) {
 			continue;
 		if (obj.GetType() == GameObjectType_Organ)
 		{
-			// Bob animation??
+			const float& bob = 2.f*sin(FloodGui::Context.FrameData.FrameCount*(.05));
+			drawList->AddRectFilled(FloodVector2(sprite->left, sprite->top + bob), FloodVector2(sprite->right, sprite->bottom + bob), FloodColor(1.f, 1.f, 1.f), sprite->texture);
 		}
-		drawList->AddRectFilled(FloodVector2(sprite->left, sprite->top), FloodVector2(sprite->right, sprite->bottom), FloodColor(1.f, 1.f, 1.f), sprite->texture);
+		else {
+			drawList->AddRectFilled(FloodVector2(sprite->left, sprite->top), FloodVector2(sprite->right, sprite->bottom), FloodColor(1.f, 1.f, 1.f), sprite->texture);
+		}
 	}
 
 	// UI AT THE TOP
@@ -508,6 +512,135 @@ Game::~Game() {
 
 }
 
+
+// Upgrade Functions
+void OrganCollectionMultiplyerHandle(void* gamePtr, void* ptr)
+{
+	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
+	Game* game = reinterpret_cast<Game*>(gamePtr);
+	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
+		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
+		upgrade->level += 1;
+		upgrade->nextLevelCost *= 1.85;
+		upgrade->Value *= 1.05;
+
+	} else {
+		// Nick will figure this out
+	}
+}
+void OrganSpoilRate(void* gamePtr, void* ptr) {
+
+
+	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
+	Game* game = reinterpret_cast<Game*>(gamePtr);
+
+
+	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
+		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
+		upgrade->level += 1;
+		upgrade->nextLevelCost *= 1.85;
+		upgrade->Value += 0.5; //Secounds
+
+	} else {
+		// Nick will figure this out
+	}
+}
+//MAX LEVEL =2
+void UFOCollectors(void* gamePtr, void* ptr) {
+
+
+	Upgrade<int>* upgrade = reinterpret_cast<Upgrade<int>*>(ptr);
+	Game* game = reinterpret_cast<Game*>(gamePtr);
+
+
+	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
+		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
+		upgrade->level += 1;
+		upgrade->nextLevelCost *= 12.15;
+		upgrade->Value += 1;
+
+	} else {
+		// Nick will figure this out
+	}
+}
+//MAx level undetermand
+void UFOSpeed(void* gamePtr, void* ptr)
+{
+	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
+	Game* game = reinterpret_cast<Game*>(gamePtr);
+	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
+		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
+		upgrade->level += 1;
+		upgrade->nextLevelCost *= 3.14;
+		upgrade->Value += 0.2f;
+
+	} else {
+		// Nick will figure this out
+	}
+}
+//MAX Level==5
+void UFORadius(void* gamePtr, void* ptr)
+{
+	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
+	Game* game = reinterpret_cast<Game*>(gamePtr);
+	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
+		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
+		upgrade->level += 1;
+		upgrade->nextLevelCost *= 3.5;
+		upgrade->Value += 0.5;
+
+	} else {
+		// Nick will figure this out
+	}
+}
+//MAX level 5
+void LivingSpaceUpgrades(void* gamePtr, void* ptr)
+{
+	Upgrade<byte>* upgrade = reinterpret_cast<Upgrade<byte>*>(ptr);
+	Game* game = reinterpret_cast<Game*>(gamePtr);
+	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
+		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
+		upgrade->level += 1;
+		upgrade->nextLevelCost *= 70;
+		
+	} else {
+		// Nick will figure this out
+	}
+}
+//Max Level == 5
+void SpawnRate(void* gamePtr, void* ptr)
+{
+	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
+	Game* game = reinterpret_cast<Game*>(gamePtr);
+	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
+		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
+		upgrade->level += 1;
+		upgrade->nextLevelCost *= 21;
+		upgrade->Value += 1;
+
+	} else {
+		// Nick will figure this out
+	}
+}
+//Constant == RefillRate
+void LivingSpaceRefillRate(void* gamePtr, void* ptr)
+{
+	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
+	Game* game = reinterpret_cast<Game*>(gamePtr);
+	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
+		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
+		upgrade->level += 1;
+		upgrade->nextLevelCost *= 1.5;
+		upgrade->Value *= 0.95;
+
+	} else {
+		// Nick will figure this out
+	}
+}
+
+
+
+
 void Game::InitalizeGameData() {
 	// Retrive Game Saves???
 	//
@@ -531,9 +664,12 @@ void Game::InitalizeGameData() {
 			gameData.LivingSpaceUpgrades[i].levelMax = LivingSpaceNames.size() - 1;
 		}
 		gameData.OrganCollectionMultiplyer.upgradeName = "Organ Collection Multiplyer";
-		gameData.OrganCollectionMultiplyer.nextLevelCost = 500000;
+		gameData.OrganCollectionMultiplyer.nextLevelCost = 100;
+		gameData.OrganCollectionMultiplyer.upgradeHandle = (upgrade_handle_fn)OrganCollectionMultiplyerHandle;
 		gameData.OrganCollectionMultiplyer.level = 0;
 		gameData.OrganCollectionMultiplyer.levelMax = 100;
+		gameData.OrganCollectionMultiplyer.Value = 1;
+
 	}
 
 	std::srand(time(NULL));
