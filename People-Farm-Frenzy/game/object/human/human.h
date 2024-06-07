@@ -33,7 +33,7 @@ static std::unordered_map<HumanTypes, LPCWSTR>HumanTextures{
 
 static std::unordered_map <HumanTypes, double>HumanChances{
 	// NUM				CHANCE
-	{HumanType_Bert,		1.f / 100.f},
+	{HumanType_Bert,		1.f / 250.f},
 	{HumanType_Boy1 ,		19.8f / 100.f},
 	{HumanType_Boy2 ,		19.8f / 100.f},
 	{HumanType_Boy3 ,		19.8f / 100.f},
@@ -64,5 +64,11 @@ public:
 	void set_time_left(const int& time) { nAttributes["time_left"] = time; }
 	bool get_exploded() { return nAttributes["exploded"]; }
 	void set_exploded(bool b = true) { nAttributes["exploded"] = b; }
+	int get_dest_x() { return nAttributes["dest_x"]; };
+	int get_dest_y() { return nAttributes["dest_y"]; };
+	void set_dest(const int& x, const int& y) {
+		nAttributes["dest_x"] = x;
+		nAttributes["dest_y"] = y;
+	}
 	HumanTypes get_human_type() { return (HumanTypes)static_cast<int>(nAttributes["type"]); }
 };

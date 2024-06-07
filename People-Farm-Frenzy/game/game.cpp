@@ -251,7 +251,36 @@ inline void GameLoop(Game* game) {
 				else {
 					// Make them run to a certian place!
 					// use elapsed time to move them!
-					human->SetPosition(human->GetSprite()->x + 1, human->GetSprite()->y + 1);
+					if (!human->get_dest_x()) {
+						while (true) {
+							double direction = (3.14159264/180)*((rand() % 8) * 45);
+							int distance = (rand() % 20) + 10;
+							int posx = human->GetSprite()->x + round(distance * cos(direction));
+							int posy = human->GetSprite()->y + round(distance * sin(direction));
+							
+							if (posx <= 20 || posx >= FloodGui::Context.Display.DisplaySize.x - 20 || posy <= 20 || posy >= FloodGui::Context.Display.DisplaySize.y - 40) {
+								printf("X: %d", posx);
+								printf("Y: %d", posy);
+								continue;
+							}
+							else {
+								human->set_dest(posx, posy);
+								break;
+							}
+							
+						}
+					}
+					else {
+						if(human->get_dest_x() >= human->GetSprite()->x)
+							human->SetPosition(human->GetSprite()->x + 1, human->GetSprite()->y);
+						else
+							human->SetPosition(human->GetSprite()->x - 1, human->GetSprite()->y);
+						if (human->get_dest_y() >= human->GetSprite()->y)
+							human->SetPosition(human->GetSprite()->x, human->GetSprite()->y+1);
+						else
+							human->SetPosition(human->GetSprite()->x, human->GetSprite()->y-1);
+					}
+					
 
 					human->set_time_left(human->get_time_left()-((now -lastLoop).count()));
 				}
