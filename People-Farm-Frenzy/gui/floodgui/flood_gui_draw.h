@@ -7,6 +7,8 @@
 
 #include "flood_gui_math.h"
 
+#define FONT_HEIGHT_MODIFIER 1.4f
+
 class FloodDrawData;
 struct FloodWindow;
 struct FloodDisplay;

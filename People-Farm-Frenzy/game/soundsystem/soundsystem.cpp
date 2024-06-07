@@ -1,7 +1,5 @@
 #include "soundsystem.h"
 
-#include <iostream>
-
 #ifdef _XBOX //Big-Endian
 #define fourccRIFF 'RIFF'
 #define fourccDATA 'data'
@@ -34,17 +32,15 @@ void SoundSystem::Release() {
     for (auto& [src, s] : Sources)
         delete s;
     Sources.clear();
-    for (std::pair<IXAudio2SourceVoice*, SoundSystemSourceCallback*> pair : Audio) {
-        delete pair.second;
-    }
-    Audio.clear();
 
     pMasterVoice->DestroyVoice();
-
+    pMasterVoice = nullptr;
     pXAudio2->Release();
     pXAudio2 = nullptr;
-    
-    delete pMasterVoice;
+
+    callbackContainer.clear();
+
+    CoUninitialize();
 }
 
 /* https://learn.microsoft.com/en-us/windows/win32/xaudio2/how-to--load-audio-data-files-in-xaudio2 */
@@ -188,8 +184,8 @@ void STDMETHODCALLTYPE SoundSystemSourceCallback::OnBufferStart(void* pBufferCon
 void STDMETHODCALLTYPE SoundSystemSourceCallback::OnStreamEnd() {
     if (!source || !sSystem)
         return;
-    std::cout << "Removed LOL\n";
-    sSystem->RemoveAudio(source);
+    source->DestroyVoice();
+    source = nullptr;
 }
 void STDMETHODCALLTYPE SoundSystemSourceCallback::OnVoiceProcessingPassEnd() { 
     if (!source || !sSystem)
@@ -204,36 +200,15 @@ void STDMETHODCALLTYPE SoundSystemSourceCallback::OnVoiceError(void* pBufferCont
         return;
 }
 
-
-void SoundSystem::RemoveAudio(IXAudio2SourceVoice* source) {
-    for (int i = 0; i < Audio.size(); i++) {
-        std::pair<IXAudio2SourceVoice*, SoundSystemSourceCallback*> pair = Audio[i];
-        if (pair.first == source) {
-            delete pair.second;
-            Audio.erase(Audio.begin() + i);
-            break;
-        }
-    }
-}
-void SoundSystem::RemoveAudio(SoundSystemSourceCallback* callback) {
-    for (int i = 0; i < Audio.size(); i++) {
-        std::pair<IXAudio2SourceVoice*, SoundSystemSourceCallback*> pair = Audio[i];
-        if (pair.second == callback) {
-            delete pair.second;
-            Audio.erase(Audio.begin() + i);
-            break;
-        }
-    }
-}
-
 HRESULT SoundSystem::PlayAudio(XAudio* audio, const float& volume) {
     if (!audio)
         return S_FALSE;
     IXAudio2SourceVoice* pSourceVoice;
-    SoundSystemSourceCallback* pCallBack = new SoundSystemSourceCallback(this);
+    std::shared_ptr<SoundSystemSourceCallback> pCallBack = std::make_shared<SoundSystemSourceCallback>(this);
+    callbackContainer.push_back(pCallBack);
 
     HRESULT hr;
-    if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&audio->wfx, 0U, 2.0F, pCallBack)))
+    if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&audio->wfx, 0U, 2.0F, pCallBack.get())))
     {
          return hr;
     }
@@ -241,7 +216,6 @@ HRESULT SoundSystem::PlayAudio(XAudio* audio, const float& volume) {
     pSourceVoice->SetVolume(volume);
     if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&audio->buffer))) {
         delete pSourceVoice;
-        delete pCallBack;
 
         return hr;
     }
@@ -249,7 +223,6 @@ HRESULT SoundSystem::PlayAudio(XAudio* audio, const float& volume) {
         delete pSourceVoice;
         return hr;
     }
-    
-    Audio.push_back(std::pair{ pSourceVoice, pCallBack });
+
     return S_OK;
 }

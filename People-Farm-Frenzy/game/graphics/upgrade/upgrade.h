@@ -9,7 +9,7 @@ template<typename T>
 struct Upgrade {
 	T Value;
 	
-	double nextLevelCost = 0.f;
+	uint64_t nextLevelCost = 0;
 	std::string upgradeName;
 
 	int level = 0;

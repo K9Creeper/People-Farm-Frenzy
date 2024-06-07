@@ -8,7 +8,6 @@
 
 int main()
 {
-    
     //This is going to be a test of the GUI
     //
     Game game;

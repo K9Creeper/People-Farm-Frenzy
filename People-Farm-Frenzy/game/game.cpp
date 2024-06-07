@@ -31,7 +31,9 @@ void SpawnHuman(std::vector<GameObject>& objects, const int& x, const int& y, co
 	Human h;
 	h.SetSize(width, height);
 	h.SetPosition(x, y);
-	h.GetSprite()->texture = GUI::gui->LoadTexture(L"resources/sprites/SpriteTest.jpg");
+	{
+		h.GetSprite()->texture = GUI::gui->LoadTexture(L"resources/sprites/SpriteTest.jpg");
+	}
 	h.set_exploded(false);
 	h.set_time_left(2500);
 	h.SetType(GameObjectType_Human);
@@ -88,7 +90,6 @@ Organ drop_new_organ(const int& x, const int& y, const int& width, const int& he
 	Chance -= OrganChances[OrganType_Brain];
 	if (random <= Chance) {
 		organ.nAttributes["type"] = OrganType_Heart;
-
 	}
 	Chance -= OrganChances[OrganType_Heart];
 	if (random <= Chance) {
@@ -133,21 +134,47 @@ Organ drop_new_organ(const int& x, const int& y, const int& width, const int& he
 	return organ;
 }
 
+
+// A utility function to format numbers like Egg Inc.
+std::string formatNumber(const uint64_t& num) {
+	if (num < 1000) {
+		return std::to_string(num);
+	}
+
+	// Define the suffixes for large numbers
+	static const std::vector<std::string> suffixes = { "", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc" };
+
+	// Find the appropriate suffix
+	const int exp = static_cast<int>(std::log10(num) / 3);
+	const double base = num / std::pow(1000, exp);
+
+	// Ensure the suffix index is within the bounds of the suffixes vector
+	if (exp >= suffixes.size()) {
+		return "Number too large";
+	}
+
+	// Format the number with the suffix
+	char formatted[10];
+	sprintf_s(formatted, sizeof(formatted), "%.2f%s", base, suffixes[exp].c_str());
+
+	return std::string(formatted);
+}
+
 inline void GameLoop(Game* game) {
 	// Part 1 Logic
 	//
 	std::vector<GameObject>& objects = game->GetGameObjects();
 	GameData* gameData = game->GetGameData();
 
-	bool press = Graphics::DrawTextureButton(L"resources/sprites/personicon.png", 100, 100, 200,  100, FloodColor(241, 11, 13, 255), 150, 100, 100, 100);
-	// This is a Animation Test
+	bool SpawnPress = Graphics::DrawTextureButton(L"resources/sprites/personicon.png", FloodGui::Context.Display.DisplaySize.x/2.f - 300 /2.f, FloodGui::Context.Display.DisplaySize.y - 150.f, 300,  100, FloodColor(241, 11, 13, 255), FloodGui::Context.Display.DisplaySize.x / 2.f - 300 / 2.f + 100, FloodGui::Context.Display.DisplaySize.y - 150.f, 100, 100);
 	{
-		if (press) {
-			SpawnHuman(objects, 500, 500, 80 , 80);
+		if (SpawnPress) {
+			SpawnHuman(objects, 500, 500, 80, 80);
 		}
 	}
 	static std::chrono::milliseconds lastLoop = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	std::chrono::milliseconds now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+	
 	for (int j = 0; j < objects.size(); j++)
 	{
 
@@ -181,8 +208,10 @@ inline void GameLoop(Game* game) {
 					#endif // ENHANCE_VFXBLOOD_CLOUDS
 
 					// SFX
-					soundSystem->PlayAudio(L"resources/sounds/sfx/explosion.wav", .5f);
-					
+					if(true)
+						soundSystem->PlayAudio(L"resources/sounds/sfx/explosion.wav", .5f);
+					else
+						soundSystem->PlayAudio(L"resources/sounds/music/BYEBYE.wav", .5f);
 
 					Organ newOrgan = drop_new_organ(pos.x, pos.y, 40, 40);
 					newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
@@ -190,7 +219,7 @@ inline void GameLoop(Game* game) {
 				}
 				else {
 					// Make them run to a certian place!
-					//
+					// use elapsed time to move them!
 					human->SetPosition(human->GetSprite()->x + 1, human->GetSprite()->y + 1);
 
 					human->set_time_left(human->get_time_left()-((now -lastLoop).count()));
@@ -225,7 +254,9 @@ inline void GameLoop(Game* game) {
 				{
 					// Collect that shiii
 					const float& price = organ->get_value();
-					
+					const float& wheighted = price * gameData->OrganCollectionMultiplyer.Value;
+
+					gameData->Glorbux += wheighted;
 
 					// Get rid of on screen
 					objects.erase(objects.begin() + j);
@@ -239,14 +270,21 @@ inline void GameLoop(Game* game) {
 				if (livingspace->get_space_type() == LivingSpaceType_None)
 					break;
 
-				bool buttonPressed = false;
-				// While Button is held decrease curret_capacity - Spawm Humans
-				// While Button is not held refill current_capacity to full (at a rate)
+				const int& xSpawn = livingspace->GetSprite()->left+(livingspace->GetSprite()->right - livingspace->GetSprite()->left)/2;
+				const int& ySpawn = livingspace->GetSprite()->bottom;
 
-				if (buttonPressed) {
-					//if(livingspace->get_current_capacity() )
+				if (SpawnPress) {
+					// While Button is held decrease curret_capacity - Spawm Humans
+
+					if (livingspace->get_current_capacity() > 0) {
+						SpawnHuman(objects, xSpawn, ySpawn, 70, 70);
+
+						livingspace->set_current_capacity(livingspace->get_current_capacity() - 1);
+					}
 				}
 				else {
+					// While Button is not held refill current_capacity to full (at a rate)
+					// utilize elapsed time
 					//livingspace->set_current_capacity();
 
 				}
@@ -267,6 +305,7 @@ inline void GameLoop(Game* game) {
 
 				if (!ufo->GetSprite()->inAnimation)
 					ufo->GetSprite()->StartAnimation("default");				
+				
 				
 
 				// FLY AROUND
@@ -378,6 +417,26 @@ inline void GameLoop(Game* game) {
 		drawList->AddRectFilled(FloodVector2(sprite->left, sprite->top), FloodVector2(sprite->right, sprite->bottom), FloodColor(1.f, 1.f, 1.f), sprite->texture);
 	}
 
+	// UI AT THE TOP
+	{
+		// Money
+		{
+			FloodVector2 glorbuxSize(50, 50);
+			FloodVector2 moneyVec(50, 100);
+			
+			FloodVector2 topVec = moneyVec - (glorbuxSize / 2.f);
+			FloodVector2 botVec = moneyVec + (glorbuxSize / 2.f);
+			
+			const std::string& money = formatNumber(gameData->Glorbux);
+
+			Graphics::DrawUIElement(money.c_str(), 16, 16, moneyVec.x, moneyVec.y, glorbuxSize.x, glorbuxSize.y, FloodColor(1.f, 1.f, 1.f), L"resources/sprites/glorbuxicon.png");
+		}
+
+		// Upgrade Menu
+		{
+
+		}
+	}
 	lastLoop = now;
 }
 
@@ -403,16 +462,18 @@ void Game::InitalizeGameData() {
 
 	if(newSave)
 	{
-		gameData.Glorbux = 0;
+		gameData.Glorbux = 20;
 		
 		for (int i = 0; i < 3; i++) {
+			gameData.LivingSpaceUpgrades[i].upgradeName = "Living Space " + std::to_string(i);
+			gameData.LivingSpaceUpgrades[i].nextLevelCost = 20;
 			gameData.LivingSpaceUpgrades[i].level = 0;
 			gameData.LivingSpaceUpgrades[i].levelMax = LivingSpaceNames.size() - 1;
-			gameData.LivingSpaceUpgrades[i].Value.nAttributes["type"] = LivingSpaceType_None;
-			gameData.LivingSpaceUpgrades[i].Value.nAttributes["current_capacity"] = LivingSpaceCapacity[(LivingSpaceTypes)static_cast<int>(gameData.LivingSpaceUpgrades[i].Value.nAttributes["type"])];
 		}
-		gameData.ButtonMultiplier.level = 0;
-		gameData.ButtonMultiplier.levelMax = 100;
+		gameData.OrganCollectionMultiplyer.upgradeName = "Organ Collection Multiplyer";
+		gameData.OrganCollectionMultiplyer.nextLevelCost = 500000;
+		gameData.OrganCollectionMultiplyer.level = 0;
+		gameData.OrganCollectionMultiplyer.levelMax = 100;
 	}
 
 	std::srand(time(NULL));
@@ -439,4 +500,3 @@ void Game::InitalizeGameGraphics() {
 std::vector<GameObject>& Game::GetGameObjects() { return GameObjects; }
 
 GameData* Game::GetGameData() { return &gameData; }
-

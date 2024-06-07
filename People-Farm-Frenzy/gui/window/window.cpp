@@ -35,7 +35,7 @@ void Window::Initalize(Gui* gui) {
 	{
 		wc = { sizeof(wc), CS_CLASSDC, MainWindowProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"People-Farm-Frenzy0", nullptr };
 		RegisterClassExW(&wc);
-		hwnd = ::CreateWindowW(wc.lpszClassName, L"People-Farm-Frenzy", (WS_BORDER), 0, 0, width, height, nullptr, nullptr, wc.hInstance, nullptr);
+		hwnd = ::CreateWindowW(wc.lpszClassName, L"People-Farm-Frenzy", (WS_POPUP), 0, 0, width, height, nullptr, nullptr, wc.hInstance, nullptr);
 
 		// Initialize Direct3D
 		if (!gui->CreateDeviceD3D())

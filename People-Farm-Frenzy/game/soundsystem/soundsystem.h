@@ -2,6 +2,8 @@
 #include <Windows.h>
 #include <xaudio2.h>
 
+#include <memory>
+
 #include <unordered_map>
 #include <vector>
 
@@ -33,8 +35,9 @@ public:
 
 	IXAudio2SourceVoice* source = nullptr;
 	SoundSystem* sSystem = nullptr;
+
 	SoundSystemSourceCallback(SoundSystem* sSystem) :sSystem{ sSystem } {};
-	~SoundSystemSourceCallback() { if (!source) return;  }
+	~SoundSystemSourceCallback() { /* Hopefully you would have destroyed source */ }
 };
 
 class SoundSystem {
@@ -46,7 +49,7 @@ private:
 	IXAudio2MasteringVoice* pMasterVoice = nullptr;
 
 	std::unordered_map<LPCWSTR, XAudio*>Sources{};
-	std::vector<std::pair<IXAudio2SourceVoice*, SoundSystemSourceCallback*>>Audio{};
+	std::vector<std::shared_ptr<SoundSystemSourceCallback>> callbackContainer;
 
 public:
 	HRESULT Init();
@@ -56,10 +59,6 @@ public:
 
 	HRESULT PlayAudio(LPCWSTR src, const float& volume = 1.f);
 	HRESULT PlayAudio(XAudio* audio, const float& volume = 1.f);
-
-	void RemoveAudio(IXAudio2SourceVoice* source);
-	void RemoveAudio(SoundSystemSourceCallback* callback);
-
 };
 
 inline SoundSystem* soundSystem = nullptr;

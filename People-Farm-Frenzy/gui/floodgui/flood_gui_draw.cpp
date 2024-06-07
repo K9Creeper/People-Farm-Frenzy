@@ -7,9 +7,6 @@
 #include <string>
 #include <functional>
 
-
-#define FONT_HEIGHT_MODIFIER 1.4f
-
 struct FloodGuiD3D9Data
 {
     LPDIRECT3DDEVICE9           pd3dDevice;

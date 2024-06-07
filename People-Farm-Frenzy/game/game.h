@@ -19,11 +19,15 @@ static std::vector<LPCWSTR>BackgroundFrames{
 struct GameData {
 	uint64_t Glorbux = 0;
 
-	Upgrade<LivingSpace> LivingSpaceUpgrades[3]{ };
+	// So basically, they don't need to hold another obj.
+	Upgrade<byte> LivingSpaceUpgrades[3]{ };
 	
-	Upgrade<double> ButtonMultiplier{ 1.0 };
+	Upgrade<float> OrganCollectionMultiplyer{ 1.0 };
+
 	Upgrade<double> LivingSpaceRefillMultiplier{ 1.0 };
 	Upgrade<int> UFOCollectors{ 0 };
+
+	
 };
 
 class Game {
