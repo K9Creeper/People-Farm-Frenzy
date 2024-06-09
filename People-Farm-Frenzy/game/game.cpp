@@ -6,6 +6,7 @@
 #include "graphics/interact/interact.h"
 #include "soundsystem/soundsystem.h"
 
+#include <iostream>
 
 void SpawnUFO(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height)
 {
@@ -64,6 +65,18 @@ void SpawnHuman(std::vector<GameObject>& objects, const int& x, const int& y, co
 
 		h.GetSprite()->texture = GUI::gui->LoadTexture(HumanTextures[(HumanTypes)h.nAttributes["type"]]);
 	}
+	
+	// Load animations
+	for (const auto& [string, frames] : HumanAnimations[(HumanTypes)h.nAttributes["type"]]) {
+		std::vector<std::chrono::milliseconds>aniDelays;
+		for (int i = 0; i < frames.size(); i++)
+			aniDelays.push_back(std::chrono::milliseconds(80));
+		std::vector<LPDIRECT3DTEXTURE9> texs;
+		for (int i = 0; i < frames.size(); i++)
+			texs.push_back(GUI::gui->LoadTexture(frames[i]));
+		h.GetSprite()->Animations[string] = Animation(texs, aniDelays);
+	}
+
 	h.set_exploded(false);
 	h.set_time_left(2500);
 	h.SetType(GameObjectType_Human);
@@ -236,14 +249,17 @@ inline void GameLoop(Game* game) {
 					#else
 						SpawnVFXBloodCloud(objects, pos.x, pos.y, 95, 95);
 					#endif // ENHANCE_VFXBLOOD_CLOUDS
+				
 
-						HumanTypes type = HumanType_Boy1;//(HumanTypes)human->nAttributes["type"];
-
+					int DUMMMY = human->nAttributes.size(); // ngl im lost af, its 1 AM i want to sleep
+					HumanTypes type = (HumanTypes)human->nAttributes["type"];
+				
 					// SFX
 					if(type != HumanType_Bert)
-						soundSystem->PlayAudio(L"resources/sounds/sfx/explosion.wav", .5f);
-					else
 						soundSystem->PlayAudio(L"resources/sounds/music/BYEBYE.wav", .3f);
+					else
+						soundSystem->PlayAudio(L"resources/sounds/sfx/explosion.wav", .5f);
+
 
 					Organ newOrgan = drop_new_organ(pos.x, pos.y, 40, 40);
 					newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);

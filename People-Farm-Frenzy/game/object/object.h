@@ -17,7 +17,7 @@ enum GameObjectType : uint16_t {
 // Game Object ;)
 class GameObject {
 public:
-	GameObject(){ }
+	GameObject() { }
 	~GameObject(){
 		nAttributes.clear();
 		sAttributes.clear();
