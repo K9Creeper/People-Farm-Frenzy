@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-void SpawnUFO(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height)
+void SpawnUFO(std::vector<std::shared_ptr<GameObject>>& objects, const int& x, const int& y, const int& width, const int& height)
 {
 	UFO h;
 	h.SetSize(width, height);
@@ -26,10 +26,11 @@ void SpawnUFO(std::vector<GameObject>& objects, const int& x, const int& y, cons
 		aniDelays.push_back(std::chrono::milliseconds(80));
 	h.GetSprite()->AddAnimation("default", Animation(aniTexs, aniDelays));
 	h.SetType(GameObjectType_UFOCollector);
-	objects.push_back(h);
+	objects.push_back(std::make_shared<GameObject>(h));
 }
 
-void SpawnHuman(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height) {
+void SpawnHuman(std::vector<std::shared_ptr<GameObject>>& objects, const int& x, const int& y, const int& width, const int& height) {
+
 	Human h;
 	h.SetSize(width, height);
 	h.SetPosition(x, y);
@@ -70,20 +71,21 @@ void SpawnHuman(std::vector<GameObject>& objects, const int& x, const int& y, co
 	for (const auto& [string, frames] : HumanAnimations[(HumanTypes)h.nAttributes["type"]]) {
 		std::vector<std::chrono::milliseconds>aniDelays;
 		for (int i = 0; i < frames.size(); i++)
-			aniDelays.push_back(std::chrono::milliseconds(80));
+			aniDelays.push_back(std::chrono::milliseconds(45));
 		std::vector<LPDIRECT3DTEXTURE9> texs;
 		for (int i = 0; i < frames.size(); i++)
 			texs.push_back(GUI::gui->LoadTexture(frames[i]));
 		h.GetSprite()->Animations[string] = Animation(texs, aniDelays);
 	}
-
+	h.set_dest(-1, -1);
 	h.set_exploded(false);
-	h.set_time_left(2500);
+	h.set_time_left(5000);
 	h.SetType(GameObjectType_Human);
-	objects.push_back(h);
+	objects.push_back(std::make_shared<GameObject>(h));
+	objects.back()->GetSprite()->StartAnimation("Foward");
 }
 
-void SpawnVFXBloodCloud(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height) {
+void SpawnVFXBloodCloud(std::vector<std::shared_ptr<GameObject>>& objects, const int& x, const int& y, const int& width, const int& height) {
 	VFX explosion;
 	explosion.nAttributes["type"] = VFXType_BloodCloud;
 	explosion.SetType(GameObjectType_VFX);
@@ -104,11 +106,11 @@ void SpawnVFXBloodCloud(std::vector<GameObject>& objects, const int& x, const in
 	for (int i = 0; i < aniTexs.size(); i++)
 		aniDelays.push_back(std::chrono::milliseconds(80));
 	explosion.GetSprite()->AddAnimation("default",Animation(aniTexs, aniDelays));
-	objects.push_back(explosion);
-	objects.back().GetSprite()->StartAnimation("default");
+	objects.push_back(std::make_shared<GameObject>(explosion));
+	objects.back()->GetSprite()->StartAnimation("default");
 }
 
-void SpawnVFXBloodClouds(std::vector<GameObject>& objects, const int& x, const int& y, const int& width, const int& height, const int& offsetPer = 2) {
+void SpawnVFXBloodClouds(std::vector<std::shared_ptr<GameObject>>& objects, const int& x, const int& y, const int& width, const int& height, const int& offsetPer = 2) {
 	SpawnVFXBloodCloud(objects, x + offsetPer, y + offsetPer, width, height);
 	SpawnVFXBloodCloud(objects, x - offsetPer, y - offsetPer, width, height);
 	SpawnVFXBloodCloud(objects, x - offsetPer, y + offsetPer, width, height);
@@ -122,8 +124,8 @@ void SpawnVFXBloodClouds(std::vector<GameObject>& objects, const int& x, const i
 
 Organ drop_new_organ(const int& x, const int& y, const int& width, const int& height) {
 	double random = static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-
-	Organ organ;
+	GameObject obj;
+	Organ& organ = *reinterpret_cast<Organ*>(&obj);
 	organ.SetType(GameObjectType_Organ);
 	double Chance = 1.f;
 
@@ -203,15 +205,38 @@ std::string formatNumber(const uint64_t& num) {
 	return std::string(formatted);
 }
 
+FloodVector2 generateBiasedCoordinate(FloodVector2 prev, int minX, int maxX, int minY, int maxY, float bias = 1.f, float strength = 10.f) {
+	int deltaX = 0, deltaY = 0;
+	do {
+		deltaX = (std::rand() % 41) - 20; 
+		deltaY = (std::rand() % 21) - 10; 
+		
+		if(std::rand() % 2 == 0)
+			deltaY += (strength) * bias;  // bias towards bottom
+	
+	} while (prev.x + deltaX < minX || prev.x + deltaX > maxX ||
+		prev.y + deltaY < minY || prev.y + deltaY > maxY);
+
+	return { prev.x + deltaX, prev.y + deltaY };
+}
+
+float calculateAngle(FloodVector2 human, FloodVector2 target) {
+	float deltaX = target.x - human.x;
+	float deltaY = target.y - human.y;
+	float angleInRadians = std::atan2(deltaY, deltaX);
+	return angleInRadians * (180.0f / 3.1415926);;
+}
+
 inline void GameLoop(Game* game) {
 	// Part 1 Logic
 	//
-	std::vector<GameObject>& objects = game->GetGameObjects();
+	std::vector<std::shared_ptr<GameObject>>& objects = game->GetGameObjects();
 	GameData* gameData = game->GetGameData();
 
+	
 	bool SpawnPress = Graphics::DrawTextureButton(L"resources/sprites/personicon.png", FloodGui::Context.Display.DisplaySize.x/2.f - 300 /2.f, FloodGui::Context.Display.DisplaySize.y - 150.f, 300,  100, FloodColor(241, 11, 13, 255), FloodGui::Context.Display.DisplaySize.x / 2.f - 300 / 2.f + 100, FloodGui::Context.Display.DisplaySize.y - 150.f, 100, 100);
 	{
-		if (SpawnPress) {
+		if (SpawnPress && objects.size() <= 3) {
 			SpawnHuman(objects, 500, 100, 80, 80);
 		}
 	}
@@ -220,8 +245,7 @@ inline void GameLoop(Game* game) {
 	
 	for (int j = 0; j < objects.size(); j++)
 	{
-
-		GameObject& obj = objects[j];
+		GameObject& obj = *objects[j];
 		GameObjectType type = obj.GetType();
 		
 		FloodVector2 pos = FloodVector2(obj.GetSprite()->x, obj.GetSprite()->y);
@@ -230,7 +254,7 @@ inline void GameLoop(Game* game) {
 			case GameObjectType_Human:
 			{
 				Human* human = reinterpret_cast<Human*>(&obj);
-
+				
 				if (human->get_exploded()) {
 					// Remove human from existance
 					objects.erase(objects.begin() + j);
@@ -245,60 +269,122 @@ inline void GameLoop(Game* game) {
 					*/
 
 					#ifdef ENHANCE_VFXBLOOD_CLOUDS
-						SpawnVFXBloodClouds(objects, pos.x, pos.y, 95, 95);
+						SpawnVFXBloodClouds(objects, pos.x, pos.y, (human->GetSprite()->bottom - human->GetSprite()->top) / 2, (human->GetSprite()->bottom - human->GetSprite()->top) / 2);
 					#else
-						SpawnVFXBloodCloud(objects, pos.x, pos.y, 95, 95);
+						SpawnVFXBloodCloud(objects, pos.x, pos.y, (human->GetSprite()->bottom - human->GetSprite()->top)/2, (human->GetSprite()->bottom - human->GetSprite()->top) / 2);
 					#endif // ENHANCE_VFXBLOOD_CLOUDS
 				
-
-					int DUMMMY = human->nAttributes.size(); // ngl im lost af, its 1 AM i want to sleep
 					HumanTypes type = (HumanTypes)human->nAttributes["type"];
 				
 					// SFX
-					if(type != HumanType_Bert)
+					if(type == HumanType_Bert)
 						soundSystem->PlayAudio(L"resources/sounds/music/BYEBYE.wav", .3f);
 					else
 						soundSystem->PlayAudio(L"resources/sounds/sfx/explosion.wav", .5f);
 
 
-					Organ newOrgan = drop_new_organ(pos.x, pos.y, 40, 40);
+					Organ newOrgan = drop_new_organ(pos.x, pos.y, (human->GetSprite()->right - human->GetSprite()->left)/5, (human->GetSprite()->bottom - human->GetSprite()->top)/5);
 					newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
-					objects.push_back(newOrgan);
+					objects.push_back(std::make_shared<GameObject>(newOrgan));
+
+					break;
 				}
 				else {
 					// Make them run to a certian place!
 					// use elapsed time to move them!
-					if (!human->get_dest_x()) {
-						while (true) {
-							double direction = (3.14159264/180)*((rand() % 8) * 45);
-							int distance = (rand() % 20) + 10;
-							int posx = human->GetSprite()->x + round(distance * cos(direction));
-							int posy = human->GetSprite()->y + round(distance * sin(direction));
-							
-							if (posx <= 20 || posx >= FloodGui::Context.Display.DisplaySize.x - 20 || posy <= 20 || posy >= FloodGui::Context.Display.DisplaySize.y - 40) {
-								printf("X: %d", posx);
-								printf("Y: %d", posy);
-								continue;
-							}
-							else {
-								human->set_dest(posx, posy);
-								break;
-							}
-							
+					
+					if ((!human->GetSprite()->inAnimation || human->GetSprite()->animationFrame+1 == human->GetSprite()->Animations[human->GetSprite()->curAnimation].textures.size()) && human->GetSprite()->lastAnimation.length() > 1) {
+						human->GetSprite()->StartAnimation(human->GetSprite()->lastAnimation);
+					}else
+						human->GetSprite()->UpdateAnimation();
+					
+					if (human->get_dest_x() < 0 && human->get_dest_y() < 0) {
+						//  new destination 
+						const FloodVector2& vec = generateBiasedCoordinate(
+							{ static_cast<float>(human->GetSprite()->x), static_cast<float>(human->GetSprite()->y) },
+							20, FloodGui::Context.Display.DisplaySize.x - 20,
+							20, FloodGui::Context.Display.DisplaySize.y - 40,
+							1.2f, 15.f
+						);
+						human->set_dest(vec.x, vec.y);
+
+						float angleDeg = calculateAngle({ static_cast<float>(human->GetSprite()->x), static_cast<float>(human->GetSprite()->y) }, { static_cast<float>(human->get_dest_x()), static_cast<float>(human->get_dest_y()) });
+
+						// Calculate Animations
+						if (angleDeg >= 30 && angleDeg <= 60)
+						{
+							human->GetSprite()->StartAnimation("Seast");
+						}
+						else if (angleDeg > 60 && angleDeg < 120)
+						{
+							human->GetSprite()->StartAnimation("Foward");
+						}else if (angleDeg >= 120 && angleDeg <= 150)
+						{
+							human->GetSprite()->StartAnimation("Sest");
+
+						}
+						else if (angleDeg > 150 && angleDeg < 210)
+						{
+							human->GetSprite()->StartAnimation("Left");
+
+						}
+						else if (angleDeg >= 210 && angleDeg <= 240)
+						{
+							human->GetSprite()->StartAnimation("Nest");
+
+						}
+						else if (angleDeg > 240 && angleDeg < 300)
+						{
+							human->GetSprite()->StartAnimation("Backward");
+
+						}
+						else if (angleDeg >= 300 && angleDeg <= 330)
+						{
+							human->GetSprite()->StartAnimation("Neast");
+
+						}
+						else
+						{
+							human->GetSprite()->StartAnimation("Right");
 						}
 					}
 					else {
-						if(human->get_dest_x() >= human->GetSprite()->x)
-							human->SetPosition(human->GetSprite()->x + 1, human->GetSprite()->y);
-						else
-							human->SetPosition(human->GetSprite()->x - 1, human->GetSprite()->y);
-						if (human->get_dest_y() >= human->GetSprite()->y)
-							human->SetPosition(human->GetSprite()->x, human->GetSprite()->y+1);
-						else
-							human->SetPosition(human->GetSprite()->x, human->GetSprite()->y-1);
+						int currentX = human->GetSprite()->x;
+						int currentY = human->GetSprite()->y;
+						int destX = human->get_dest_x();
+						int destY = human->get_dest_y();
+
+
+						// This needs to be improved
+						int moveDst = ((FloodGui::Context.FrameData.tElaspedFrame.count()*1000.f) * 1.5f);
+
+						if (currentX == destX && currentY == destY) {
+							// reset to (-1, -1)
+							human->set_dest(-1, -1);
+						}
+						else {
+							// horizontally 
+							if (currentX < destX) {
+								human->SetPosition(currentX + min(moveDst, destX - currentX), currentY);
+							}
+							else if (currentX > destX) {
+								human->SetPosition(currentX - min(moveDst,  currentX - destX ), currentY);
+							}
+
+							// vertically 
+							if (currentY < destY) {
+								human->SetPosition(human->GetSprite()->x, currentY + min(moveDst, destY - currentY));
+							}
+							else if (currentY > destY) {
+								human->SetPosition(human->GetSprite()->x, currentY - min(moveDst, currentY - destY));
+							}
+						}
 					}
+
+				
 					
 
+					// count down till BYE BYE
 					human->set_time_left(human->get_time_left()-((now -lastLoop).count()));
 				}
 				break;
@@ -312,7 +398,7 @@ inline void GameLoop(Game* game) {
 				if (!vfx->GetSprite()->inAnimation) {
 					if (vfx->get_vfx_type() == VFXType_BloodCloud)
 					{
-						
+						// Unused
 					}
 					objects.erase(objects.begin() + j);
 				}
@@ -425,8 +511,8 @@ inline void GameLoop(Game* game) {
 		while (sort) {
 			sort = false;
 			for (int i = 1; i < objects.size(); i++) {
-				GameObject& obj1 = objects[i - 1];
-				GameObject& obj2 = objects[i];
+				GameObject& obj1 = *(objects[i - 1].get());
+				GameObject& obj2 = *(objects[i].get());
 
 				const GameObjectType& type1 = obj1.GetType();
 				const GameObjectType& type2 = obj2.GetType();
@@ -483,7 +569,8 @@ inline void GameLoop(Game* game) {
 		frame = 0;
 	drawList->AddRectFilled(FloodVector2(), FloodGui::Context.Display.DisplaySize, FloodColor(1.f, 1.f, 1.f), GUI::gui->LoadTexture(BackgroundFrames[frame]));
 	
-	for (GameObject& obj : objects) {
+	for (std::shared_ptr<GameObject> objj : objects) {
+		GameObject& obj = *(objj.get());
 		Sprite* sprite = obj.GetSprite();
 		if (obj.GetType() == GameObjectType_None || !sprite->texture)
 			continue;
@@ -543,7 +630,7 @@ Game::Game() {
 }
 
 Game::~Game() {
-
+	GameObjects.clear();
 }
 
 
@@ -727,6 +814,6 @@ void Game::InitalizeGameGraphics() {
 	GUI::gui->RunFlood();
 }
 
-std::vector<GameObject>& Game::GetGameObjects() { return GameObjects; }
+std::vector<std::shared_ptr<GameObject>>& Game::GetGameObjects() { return GameObjects; }
 
 GameData* Game::GetGameData() { return &gameData; }

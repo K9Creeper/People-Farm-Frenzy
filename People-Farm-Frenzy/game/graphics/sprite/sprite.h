@@ -25,14 +25,12 @@ struct Sprite {
 
 	bool inAnimation = false;
 	std::string curAnimation{};
+	std::string lastAnimation{};
 	int animationFrame = 0;
 	std::chrono::milliseconds tLastAnimationFrame = std::chrono::milliseconds(0);
 
 	void StartAnimation(const std::string& name) {
-		curAnimation.clear();
-		inAnimation = false;
-		animationFrame = 0;
-		tLastAnimationFrame = std::chrono::milliseconds(0);
+		StopAnimation();
 		if (Animations.find(name) == Animations.end())
 			return;
 
@@ -62,6 +60,7 @@ struct Sprite {
 
 	void StopAnimation() {
 		inAnimation = false;
+		lastAnimation = curAnimation;
 		curAnimation.clear();
 		animationFrame = 0;
 		tLastAnimationFrame = std::chrono::milliseconds(0);

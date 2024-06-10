@@ -39,7 +39,7 @@ public:
 	Game();
 	~Game();
 private:
-	std::vector<GameObject>GameObjects{};
+	std::vector<std::shared_ptr<GameObject>>GameObjects{};
 
 	GameData gameData;
 public:
@@ -47,7 +47,7 @@ public:
 	void InitalizeGameGraphics();
 	void InitalizeGameSound();
 
-	std::vector<GameObject>& GetGameObjects();
+	std::vector<std::shared_ptr<GameObject>>& GetGameObjects();
 	GameData* GetGameData();
 };
 
