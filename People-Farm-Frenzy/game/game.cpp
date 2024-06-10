@@ -356,7 +356,7 @@ inline void GameLoop(Game* game) {
 
 
 						// This needs to be improved
-						int moveDst = ((FloodGui::Context.FrameData.tElaspedFrame.count()*1000.f) * 1.5f);
+						int moveDst = ((FloodGui::Context.FrameData.tElaspedFrame.count()*1000.f) * 2.f);
 
 						if (currentX == destX && currentY == destY) {
 							// reset to (-1, -1)
