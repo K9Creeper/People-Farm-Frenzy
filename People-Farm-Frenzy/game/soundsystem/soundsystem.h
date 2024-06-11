@@ -57,8 +57,8 @@ public:
 	XAudio CreateAudio(LPCWSTR src);
 	void AddAudio(LPCWSTR src, XAudio* audio = nullptr);
 
-	HRESULT PlayAudio(LPCWSTR src, const float& volume = 1.f);
-	HRESULT PlayAudio(XAudio* audio, const float& volume = 1.f);
+	HRESULT PlayAudio(LPCWSTR src, const float& volume = 1.f, bool loop = false);
+	HRESULT PlayAudio(XAudio* audio, const float& volume = 1.f, bool loop = false);
 };
 
 inline SoundSystem* soundSystem = nullptr;

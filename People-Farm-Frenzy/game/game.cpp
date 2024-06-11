@@ -163,12 +163,15 @@ void SpawnVFXBloodClouds(std::vector<std::shared_ptr<GameObject>>& objects, cons
 	SpawnVFXBloodCloud(objects, x + offsetPer, y , width, height);
 }
 
-Organ drop_new_organ(const int& x, const int& y, const int& width, const int& height) {
+Organ drop_new_organ(Game* game, const int& x, const int& y, const int& width, const int& height) {
 	double random = static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 	GameObject obj;
 	Organ& organ = *reinterpret_cast<Organ*>(&obj);
 	organ.SetType(GameObjectType_Organ);
 	double Chance = 1.f;
+
+	// convert sec to milli
+	organ.set_time_left(game->GetGameData()->OrganSpoilRate.Value * 1000.f);
 
 	if (random <= Chance) {
 		organ.nAttributes["type"] = OrganType_Brain;
@@ -291,9 +294,19 @@ inline void GameLoop(Game* game) {
 	
 	bool SpawnPress = Graphics::DrawTextureButton(L"resources/sprites/personicon.png", FloodGui::Context.Display.DisplaySize.x/2.f - (300*GAMESCALEX()) /2.f, FloodGui::Context.Display.DisplaySize.y - 150.f* GAMESCALEY(), 300* GAMESCALEX(),  100*GAMESCALEY(), FloodColor(241, 11, 13, 255), FloodGui::Context.Display.DisplaySize.x / 2.f - (300* GAMESCALEX()) / 2.f + (100* GAMESCALEX()), FloodGui::Context.Display.DisplaySize.y - (150.f * GAMESCALEY()), 100 * GAMESCALEX(), 100 * GAMESCALEY());
 
+	static std::chrono::milliseconds last_press = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+	static std::chrono::milliseconds last_spawned= std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+	static std::chrono::milliseconds last_refill = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+	if (SpawnPress) {
+			last_press = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+	}
+
 	static std::chrono::milliseconds lastLoop = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	std::chrono::milliseconds now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	
+	bool spawnedSomething = false;
+	bool refilledSomething = false;
+
 	for (int j = 0; j < objects.size(); j++)
 	{
 		GameObject& obj = *objects[j];
@@ -334,7 +347,7 @@ inline void GameLoop(Game* game) {
 						soundSystem->PlayAudio(L"resources/sounds/sfx/explosion.wav", .5f);
 
 
-					Organ newOrgan = drop_new_organ(pos.x, pos.y, (human->GetSprite()->right - human->GetSprite()->left)/5, (human->GetSprite()->bottom - human->GetSprite()->top)/5);
+					Organ newOrgan = drop_new_organ(game, pos.x, pos.y, (human->GetSprite()->right - human->GetSprite()->left)/4, (human->GetSprite()->bottom - human->GetSprite()->top)/4);
 					newOrgan.GetSprite()->texture = GUI::gui->LoadTexture(OrganTextures[(OrganTypes)newOrgan.nAttributes["type"]]);
 					objects.push_back(std::make_shared<GameObject>(newOrgan));
 
@@ -353,14 +366,14 @@ inline void GameLoop(Game* game) {
 						//  new destination 
 						const FloodVector2& vec = generateBiasedCoordinate(
 							{ static_cast<float>(human->GetSprite()->x), static_cast<float>(human->GetSprite()->y) },
-							20, FloodGui::Context.Display.DisplaySize.x - 20,
-							20, FloodGui::Context.Display.DisplaySize.y - 40,
+							40*GAMESCALEX(), FloodGui::Context.Display.DisplaySize.x - 40 * GAMESCALEX(),
+							39 * GAMESCALEY(), FloodGui::Context.Display.DisplaySize.y - 95 * GAMESCALEY(),
 							1.2f, 15.f
 						);
 						human->set_dest(vec.x, vec.y);
 
 						float angleDeg = calculateAngle({ static_cast<float>(human->GetSprite()->x), static_cast<float>(human->GetSprite()->y) }, { static_cast<float>(human->get_dest_x()), static_cast<float>(human->get_dest_y()) });
-						std::cout << angleDeg << "\n";
+
 						// Calculate Animations
 						if (angleDeg >= 30 && angleDeg <= 60)
 						{
@@ -474,7 +487,14 @@ inline void GameLoop(Game* game) {
 
 					// Get rid of on screen
 					objects.erase(objects.begin() + j);
+					break;
 				}
+				if(organ->get_time_left() <= 0) {
+					objects.erase(objects.begin() + j);
+					break;
+				}
+
+				organ->set_time_left(organ->get_time_left() - ((now - lastLoop).count()));
 				break;
 			}
 			case GameObjectType_LivingSpace:
@@ -486,21 +506,24 @@ inline void GameLoop(Game* game) {
 
 				const int& xSpawn = livingspace->GetSprite()->left+(livingspace->GetSprite()->right - livingspace->GetSprite()->left)/2;
 				const int& ySpawn = livingspace->GetSprite()->bottom;
-
 				if (SpawnPress) {
-					// While Button is held decrease curret_capacity - Spawm Humans
-
-					if (livingspace->get_current_capacity() > 0) {
-						SpawnHuman(objects, xSpawn, ySpawn, 70 * GAMESCALEX(), 70 * GAMESCALEY());
-
+					if (livingspace->get_current_capacity() > 0 && ((last_spawned.count() + (long long)gameData->SpawnRate.Value) <= (now).count())) {
+						SpawnHuman(objects, xSpawn, ySpawn, 90 * GAMESCALEX(), 90 * GAMESCALEY());
+						spawnedSomething = true;
 						livingspace->set_current_capacity(livingspace->get_current_capacity() - 1);
 					}
 				}
 				else {
-					// While Button is not held refill current_capacity to full (at a rate)
-					// utilize elapsed time
-					//livingspace->set_current_capacity();
-
+					if (livingspace->get_current_capacity() < livingspace->get_max_capacity())
+					{
+						if ((last_refill.count() + (long long)gameData->LivingSpaceRefillRate.Value) <= (now).count())
+						{
+							refilledSomething = true;
+							livingspace->set_current_capacity(livingspace->get_current_capacity() + 1);
+						}
+					}
+					
+				
 				}
 
 				
@@ -536,7 +559,10 @@ inline void GameLoop(Game* game) {
 		}
 		
 	}
-	
+	if(spawnedSomething)
+		last_spawned = now;
+	if (refilledSomething)
+		last_refill = now;
 	// Part 2 Rendering
 	/*
 	RENDER SEQ.
@@ -630,6 +656,12 @@ inline void GameLoop(Game* game) {
 			const float& bob = 2.f*sin(FloodGui::Context.FrameData.FrameCount*(.05));
 			drawList->AddRectFilled(FloodVector2(sprite->left, sprite->top + bob), FloodVector2(sprite->right, sprite->bottom + bob), FloodColor(1.f, 1.f, 1.f), sprite->texture);
 		}
+		else if (obj.GetType() == GameObjectType_LivingSpace)
+		{
+			LivingSpace* s = reinterpret_cast<LivingSpace*>(objj.get());
+			drawList->AddRectFilled(FloodVector2(sprite->left, sprite->top), FloodVector2(sprite->right, sprite->bottom), FloodColor(1.f, 1.f, 1.f), sprite->texture);
+			drawList->AddText(std::to_string(s->get_current_capacity()).c_str(), FloodVector2(sprite->left, sprite->bottom - ((sprite->bottom - sprite->top)/4.f)), FloodColor(1.f, 1.f, 1.f), 15 * GAMESCALEY(), 15 * GAMESCALEX());
+		}
 		else {
 			drawList->AddRectFilled(FloodVector2(sprite->left, sprite->top), FloodVector2(sprite->right, sprite->bottom), FloodColor(1.f, 1.f, 1.f), sprite->texture);
 		}
@@ -652,25 +684,75 @@ inline void GameLoop(Game* game) {
 
 		// Upgrade Menu
 		{
+			static bool up = true;
 			static bool upgradeOpen = false;
-			static const int& width = 50 * GAMESCALEX();
-			static const int& height = 35 * GAMESCALEY();
 
-			static const int& y = 100 * GAMESCALEY() - height / 2.f;
-			static const int& x = FloodGui::Context.Display.DisplaySize.x - width - 30 * GAMESCALEX();
+			static const float& width = 50 * GAMESCALEX();
+			static const float& height = 35 * GAMESCALEY();
 
-			if (!upgradeOpen)
-			{	
-				upgradeOpen = Graphics::DrawTextureButton(L"resources/sprites/threelinesicon.png", x, y, width, height, FloodColor(1.f, 1.f, 1.f), x+(15 * GAMESCALEX() /2.f), y, width-(15 * GAMESCALEY()), height);
+			static const float& y = 100 * GAMESCALEY() - height / 2.f;
+			static const float& x = FloodGui::Context.Display.DisplaySize.x - width - 30 * GAMESCALEX();
+
+			Graphics::DrawTextureButton(L"resources/sprites/threelinesicon.png", x, y, width, height, FloodGui::Context.colors[FloodGuiCol_WinTitleBar], x+(15 * GAMESCALEX() /2.f), y, width-(15 * GAMESCALEY()), height);
+			if (up && FloodGui::Context.IO.MouseInput[FloodGuiButton_LeftMouse] && FindPoint( { x, y }, { x + width, y + height }, FloodGui::Context.IO.mouse_pos))
+			{
+				up = false;
+				upgradeOpen = !upgradeOpen;
 			}
-			else {
-				drawList->AddRectFilled({ FloodGui::Context.Display.DisplaySize.x - 300 * GAMESCALEX(), static_cast<float>(y) }, FloodGui::Context.Display.DisplaySize - FloodVector2{0, static_cast<float>(y)}, FloodColor(1.f, 1.f, 1.f));
-				if(Graphics::DrawTextureButton(L"resources/sprites/threelinesicon.png", FloodGui::Context.Display.DisplaySize.x - 300 * GAMESCALEX(), y, width, height, FloodColor(1.f, 1.f, 1.f), FloodGui::Context.Display.DisplaySize.x  - 300 * GAMESCALEX() + (15 * GAMESCALEX() / 2.f), y, width - 15 * GAMESCALEX(), height))
-					upgradeOpen = false;
-				drawList->AddText("Upgrades", { FloodGui::Context.Display.DisplaySize.x - 300*GAMESCALEX() + (15 * GAMESCALEX() / 2.f) + width + 5* GAMESCALEX(), y + height - (height / 4.f* GAMESCALEY()) }, FloodColor(), 15* GAMESCALEY(), 15* GAMESCALEX());
-				// Loop through upgrades.
+			else if (!FloodGui::Context.IO.MouseInput[FloodGuiButton_LeftMouse])
+				up = true;
+			else if (FloodGui::Context.IO.MouseInput[FloodGuiButton_LeftMouse])
+				up = false;
+			
 
+			FloodGui::BeginWindow("Upgrades", upgradeOpen);
+			for (int i = 0; i < 3; i++) {
+					std::string price = (formatNumber(gameData->LivingSpaceUpgrades[i].nextLevelCost) + " Glorbux");
+					std::string name = gameData->LivingSpaceUpgrades[i].upgradeName + " Lvl. " + std::to_string(gameData->LivingSpaceUpgrades[i].level) + " of " + std::to_string(gameData->LivingSpaceUpgrades[i].levelMax);
+					name += "  " + price;
+					if (FloodGui::Button(name.c_str()))
+					{
+						gameData->LivingSpaceUpgrades[i].upgradeHandle(game, &gameData->LivingSpaceUpgrades[i]);
+						AddLivingSpace(objects, i + 1, (LivingSpaceTypes)gameData->LivingSpaceUpgrades[i].level, 1000000);
+					}
 			}
+			{
+				std::string price = (formatNumber(gameData->OrganCollectionMultiplyer.nextLevelCost) + " Glorbux");			
+				std::string name = gameData->OrganCollectionMultiplyer.upgradeName + " Lvl. " + std::to_string(gameData->OrganCollectionMultiplyer.level) + " of " + std::to_string(gameData->OrganCollectionMultiplyer.levelMax);
+				name += "  " + price;
+				if (FloodGui::Button(name.c_str()))
+				{
+					gameData->OrganCollectionMultiplyer.upgradeHandle(game, &gameData->OrganCollectionMultiplyer);
+				}
+			}
+			{
+				std::string price = (formatNumber(gameData->OrganSpoilRate.nextLevelCost) + " Glorbux");
+				std::string name = gameData->OrganSpoilRate.upgradeName + " Lvl. " + std::to_string(gameData->OrganSpoilRate.level) + " of " + std::to_string(gameData->OrganSpoilRate.levelMax);
+				name += "  " + price;
+				if (FloodGui::Button(name.c_str()))
+				{
+					gameData->OrganSpoilRate.upgradeHandle(game, &gameData->OrganSpoilRate);
+				}
+			}
+			{
+				std::string price = (formatNumber(gameData->SpawnRate.nextLevelCost) + " Glorbux");
+				std::string name = gameData->SpawnRate.upgradeName + " Lvl. " + std::to_string(gameData->SpawnRate.level) + " of " + std::to_string(gameData->SpawnRate.levelMax);
+				name += "  " + price;
+				if (FloodGui::Button(name.c_str()))
+				{
+					gameData->SpawnRate.upgradeHandle(game, &gameData->SpawnRate);
+				}
+			}
+			{
+				std::string price = (formatNumber(gameData->LivingSpaceRefillRate.nextLevelCost) + " Glorbux");
+				std::string name = gameData->LivingSpaceRefillRate.upgradeName + " Lvl. " + std::to_string(gameData->LivingSpaceRefillRate.level) + " of " + std::to_string(gameData->LivingSpaceRefillRate.levelMax);
+				name += "  " + price;
+				if (FloodGui::Button(name.c_str()))
+				{
+					gameData->LivingSpaceRefillRate.upgradeHandle(game, &gameData->LivingSpaceRefillRate);
+				}
+			}
+			FloodGui::EndWindow();
 		}
 	}
 	lastLoop = now;
@@ -686,26 +768,25 @@ Game::~Game() {
 
 
 // Upgrade Functions
-void OrganCollectionMultiplyerHandle(void* gamePtr, void* ptr)
+void OrganCollectionMultiplyerUpgrade(void* gamePtr, void* ptr)
 {
 	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
 	Game* game = reinterpret_cast<Game*>(gamePtr);
 	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
 		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
 		upgrade->level += 1;
-		upgrade->nextLevelCost *= 1.85;
-		upgrade->Value *= 1.05;
+		upgrade->nextLevelCost *= 3;
+		upgrade->Value *= 1.5;
 
 	} else {
 		// Nick will figure this out
 	}
 }
-void OrganSpoilRate(void* gamePtr, void* ptr) {
+void OrganSpoilRateUpgrade(void* gamePtr, void* ptr) {
 
 
 	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
 	Game* game = reinterpret_cast<Game*>(gamePtr);
-
 
 	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
 		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
@@ -719,8 +800,6 @@ void OrganSpoilRate(void* gamePtr, void* ptr) {
 }
 //MAX LEVEL =2
 void UFOCollectors(void* gamePtr, void* ptr) {
-
-
 	Upgrade<int>* upgrade = reinterpret_cast<Upgrade<int>*>(ptr);
 	Game* game = reinterpret_cast<Game*>(gamePtr);
 
@@ -736,7 +815,7 @@ void UFOCollectors(void* gamePtr, void* ptr) {
 	}
 }
 //MAx level undetermand
-void UFOSpeed(void* gamePtr, void* ptr)
+void UFOSpeedUpgrade(void* gamePtr, void* ptr)
 {
 	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
 	Game* game = reinterpret_cast<Game*>(gamePtr);
@@ -751,7 +830,7 @@ void UFOSpeed(void* gamePtr, void* ptr)
 	}
 }
 //MAX Level==5
-void UFORadius(void* gamePtr, void* ptr)
+void UFORadiusUpgrade(void* gamePtr, void* ptr)
 {
 	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
 	Game* game = reinterpret_cast<Game*>(gamePtr);
@@ -765,7 +844,7 @@ void UFORadius(void* gamePtr, void* ptr)
 		// Nick will figure this out
 	}
 }
-//MAX level 5
+
 void LivingSpaceUpgrades(void* gamePtr, void* ptr)
 {
 	Upgrade<byte>* upgrade = reinterpret_cast<Upgrade<byte>*>(ptr);
@@ -773,29 +852,30 @@ void LivingSpaceUpgrades(void* gamePtr, void* ptr)
 	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
 		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
 		upgrade->level += 1;
-		upgrade->nextLevelCost *= 70;
-		
+		upgrade->nextLevelCost *= 3;
+
 	} else {
 		// Nick will figure this out
+
 	}
 }
 //Max Level == 5
-void SpawnRate(void* gamePtr, void* ptr)
+void SpawnRateUpgrade(void* gamePtr, void* ptr)
 {
 	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
 	Game* game = reinterpret_cast<Game*>(gamePtr);
 	if ((game->GetGameData()->Glorbux >= upgrade->nextLevelCost) && (upgrade->level < upgrade->levelMax)) {
 		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
 		upgrade->level += 1;
-		upgrade->nextLevelCost *= 21;
-		upgrade->Value += 1;
+		upgrade->nextLevelCost *= 1.7;
+		upgrade->Value *= .70;
 
 	} else {
 		// Nick will figure this out
 	}
 }
 //Constant == RefillRate
-void LivingSpaceRefillRate(void* gamePtr, void* ptr)
+void LivingSpaceRefillRateUpgrade(void* gamePtr, void* ptr)
 {
 	Upgrade<float>* upgrade = reinterpret_cast<Upgrade<float>*>(ptr);
 	Game* game = reinterpret_cast<Game*>(gamePtr);
@@ -803,7 +883,7 @@ void LivingSpaceRefillRate(void* gamePtr, void* ptr)
 		game->GetGameData()->Glorbux -= upgrade->nextLevelCost;
 		upgrade->level += 1;
 		upgrade->nextLevelCost *= 1.5;
-		upgrade->Value *= 0.95;
+		upgrade->Value *= 0.75;
 
 	} else {
 		// Nick will figure this out
@@ -828,22 +908,43 @@ void Game::InitalizeGameData() {
 		gameData.Glorbux = 20;
 		
 		for (int i = 0; i < 3; i++) {
-			gameData.LivingSpaceUpgrades[i].upgradeName = "Living Space " + std::to_string(i);
+			gameData.LivingSpaceUpgrades[i].upgradeName = "House " + std::to_string(i+1);
 			gameData.LivingSpaceUpgrades[i].nextLevelCost = 20;
 			gameData.LivingSpaceUpgrades[i].level = 0;
 			gameData.LivingSpaceUpgrades[i].levelMax = LivingSpaceNames.size() - 1;
+			gameData.LivingSpaceUpgrades[i].upgradeHandle = (upgrade_handle_fn)LivingSpaceUpgrades;
 		}
-		gameData.OrganCollectionMultiplyer.upgradeName = "Organ Collection Multiplyer";
-		gameData.OrganCollectionMultiplyer.nextLevelCost = 100;
-		gameData.OrganCollectionMultiplyer.upgradeHandle = (upgrade_handle_fn)OrganCollectionMultiplyerHandle;
-		gameData.OrganCollectionMultiplyer.level = 0;
-		gameData.OrganCollectionMultiplyer.levelMax = 100;
-		gameData.OrganCollectionMultiplyer.Value = 1;
-
+		{
+			gameData.OrganCollectionMultiplyer.upgradeName = "Organ Multi.";
+			gameData.OrganCollectionMultiplyer.nextLevelCost = 900;
+			gameData.OrganCollectionMultiplyer.upgradeHandle = (upgrade_handle_fn)OrganCollectionMultiplyerUpgrade;
+			gameData.OrganCollectionMultiplyer.level = 0;
+			gameData.OrganCollectionMultiplyer.levelMax = 5;
+		}
+		{
+			gameData.OrganSpoilRate.upgradeName = "Organ Spoil";
+			gameData.OrganSpoilRate.nextLevelCost = 100;
+			gameData.OrganSpoilRate.upgradeHandle = (upgrade_handle_fn)OrganSpoilRateUpgrade;
+			gameData.OrganSpoilRate.level = 0;
+			gameData.OrganSpoilRate.levelMax = 10;
+		}
+		{
+			gameData.LivingSpaceRefillRate.upgradeName = "Refill Rate";
+			gameData.LivingSpaceRefillRate.nextLevelCost = 1000;
+			gameData.LivingSpaceRefillRate.upgradeHandle = (upgrade_handle_fn)LivingSpaceRefillRateUpgrade;
+			gameData.LivingSpaceRefillRate.level = 0;
+			gameData.LivingSpaceRefillRate.levelMax = 5;
+		}
+		{
+			gameData.SpawnRate.upgradeName = "Spawn Rate";
+			gameData.SpawnRate.nextLevelCost = 500;
+			gameData.SpawnRate.upgradeHandle = (upgrade_handle_fn)SpawnRateUpgrade;
+			gameData.SpawnRate.level = 0;
+			gameData.SpawnRate.levelMax = 5;
+		}
 	}
 
 	std::srand(time(NULL));
-
 }
 
 void Game::InitalizeGameSound() {
@@ -860,6 +961,8 @@ void Game::InitalizeGameGraphics() {
 	GUI::window->Initalize(GUI::gui);
 
 	GUI::gui->AddRenderHandle((render_handle_fn)GameLoop, this);
+
+	soundSystem->PlayAudio(L"resources/sounds/music/black-hawk-light-cinematic-background-music-for-drama-video-40-second-202452.wav", .15f, true);
 
 	GUI::gui->RunFlood();
 }

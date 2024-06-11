@@ -2,7 +2,7 @@
 #include <cstring>
 #include <functional>
 
-//								 void* <- this is going to be a ptr to the structure itself.
+//										void* <- this is going to be a ptr to the structure itself.
 typedef void(*upgrade_handle_fn)(void*, void*);
 
 template<typename T>

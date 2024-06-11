@@ -30,8 +30,8 @@ static std::unordered_map <LivingSpaceTypes, int>LivingSpaceCapacity{
 	{LivingSpaceType_House ,		50},
 	{LivingSpaceType_Duplex ,		100},
 	{LivingSpaceType_Apartment ,	500},
-	{LivingSpaceType_Warehouse ,	2000},
-	{LivingSpaceType_Skyscraper ,	10000},
+	{LivingSpaceType_Warehouse ,	1000},
+	{LivingSpaceType_Skyscraper ,	5000},
 };
 
 /*
