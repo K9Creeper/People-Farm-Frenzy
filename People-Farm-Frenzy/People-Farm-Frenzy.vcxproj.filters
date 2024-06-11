@@ -460,27 +460,6 @@
     <Image Include="resources\sprites\map\map.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\sprites\magma\frame1.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\magma\frame2.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\magma\frame3.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\magma\frame4.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\magma\frame5.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\fire\frame1.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\sprites\fire\frame2.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="resources\sprites\personicon.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -521,32 +500,14 @@
     <Library Include="gui\d3dx9\Lib\x64\d3dx9.lib" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="resources\sounds\siren\eerie-low-siren-fx.wav">
-      <Filter>Resource Files</Filter>
-    </Media>
-    <Media Include="resources\sounds\siren\purge-siren-fx_129bpm (1).wav">
-      <Filter>Resource Files</Filter>
-    </Media>
-    <Media Include="resources\sounds\siren\purge-siren-fx_129bpm.wav">
-      <Filter>Resource Files</Filter>
-    </Media>
-    <Media Include="resources\sounds\siren\scary-laugh-fx.wav">
-      <Filter>Resource Files</Filter>
-    </Media>
-    <Media Include="resources\sounds\siren\scary-alarm-siren-fx_7bpm.wav">
-      <Filter>Resource Files</Filter>
-    </Media>
-    <Media Include="resources\sounds\siren\siren-reverb-fx_165bpm.wav">
-      <Filter>Resource Files</Filter>
-    </Media>
     <Media Include="resources\sounds\sfx\explosion.mp3" />
     <Media Include="resources\sounds\sfx\explosion.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="resources\sounds\music\black-hawk-light-cinematic-background-music-for-drama-video-40-second-202452.wav">
+    <Media Include="resources\sounds\music\BYEBYE.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="resources\sounds\music\BYEBYE.wav">
+    <Media Include="resources\sounds\music\black-hawk-light-cinematic-background-music-for-drama-video-40-second-202452.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

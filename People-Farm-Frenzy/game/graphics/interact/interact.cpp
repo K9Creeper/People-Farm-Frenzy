@@ -43,3 +43,28 @@ void Graphics::DrawUIElement(const char* text, const int& textSize, const int& t
 	FloodGui::Context.GetForegroundDrawList()->AddRectFilled(topVec, botVec, FloodColor(1, 1, 1), GUI::gui->LoadTexture(src));
 	FloodGui::Context.GetForegroundDrawList()->AddText(text, textPos, col, textSize, textSpacing);
 }
+
+bool Graphics::DrawTextButton(const char* text,const float& x, const float& y, const float& width, const float& height, FloodColor col, const int& fontS, const int& spacing) {
+	FloodVector2 min{ x, y };
+	FloodVector2 max{ x + width, y + height };
+
+	bool hit = false;
+	if (FindPoint(min, max, FloodGui::Context.IO.mouse_pos)) {
+		if (FloodGui::Context.IO.MouseInput[FloodGuiButton_LeftMouse]) {
+			col.r() *= .75f;
+			col.g() *= .75f;
+			col.b() *= .75f;
+			hit = true;
+		}
+		else {
+			col.r() *= .85f;
+			col.g() *= .85f;
+			col.b() *= .85f;
+		}
+	}
+
+	FloodGui::Context.GetForegroundDrawList()->AddRectFilled(min, max, col, nullptr);
+	FloodVector2 size = CalculateTextSize(text, fontS, spacing);
+	FloodGui::Context.GetForegroundDrawList()->AddText(text, min + size/2.f, col, fontS, spacing);
+	return hit;
+}

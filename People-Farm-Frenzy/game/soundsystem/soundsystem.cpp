@@ -162,11 +162,11 @@ void SoundSystem::AddAudio(LPCWSTR src, XAudio* AUD) {
     Sources[src] = audio;
 }
 
-HRESULT SoundSystem::PlayAudio(LPCWSTR src, const float& volume) {
+HRESULT SoundSystem::PlayAudio(LPCWSTR src, const float& volume, bool loop) {
     if (Sources.find(src) == Sources.end())
         AddAudio(src);
     XAudio* audio = Sources[src];
-    return PlayAudio(audio, volume);
+    return PlayAudio(audio, volume, loop);
 }
 
 void STDMETHODCALLTYPE SoundSystemSourceCallback::OnBufferEnd(void* pBufferContext) {
@@ -200,12 +200,15 @@ void STDMETHODCALLTYPE SoundSystemSourceCallback::OnVoiceError(void* pBufferCont
         return;
 }
 
-HRESULT SoundSystem::PlayAudio(XAudio* audio, const float& volume) {
+HRESULT SoundSystem::PlayAudio(XAudio* audio, const float& volume, bool loop) {
     if (!audio)
         return S_FALSE;
     IXAudio2SourceVoice* pSourceVoice;
     std::shared_ptr<SoundSystemSourceCallback> pCallBack = std::make_shared<SoundSystemSourceCallback>(this);
     callbackContainer.push_back(pCallBack);
+
+    if (loop)
+        audio->buffer.LoopCount = XAUDIO2_LOOP_INFINITE;
 
     HRESULT hr;
     if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&audio->wfx, 0U, 2.0F, pCallBack.get())))

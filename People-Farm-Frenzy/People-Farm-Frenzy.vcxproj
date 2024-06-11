@@ -269,18 +269,11 @@
     <Image Include="resources\sprites\BloodCloud\frame_6_delay-0.08s.png" />
     <Image Include="resources\sprites\BloodCloud\frame_7_delay-0.08s.png" />
     <Image Include="resources\sprites\BloodCloud\frame_8_delay-0.08s.png" />
-    <Image Include="resources\sprites\fire\frame1.png" />
-    <Image Include="resources\sprites\fire\frame2.png" />
     <Image Include="resources\sprites\glorbuxicon.png" />
     <Image Include="resources\sprites\livingspace\apartment.png" />
     <Image Include="resources\sprites\livingspace\duplex.png" />
     <Image Include="resources\sprites\livingspace\house.png" />
     <Image Include="resources\sprites\livingspace\shack.png" />
-    <Image Include="resources\sprites\magma\frame1.png" />
-    <Image Include="resources\sprites\magma\frame2.png" />
-    <Image Include="resources\sprites\magma\frame3.png" />
-    <Image Include="resources\sprites\magma\frame4.png" />
-    <Image Include="resources\sprites\magma\frame5.png" />
     <Image Include="resources\sprites\map\map.png" />
     <Image Include="resources\sprites\organs\brain.png" />
     <Image Include="resources\sprites\organs\eyeball.png" />
@@ -321,12 +314,6 @@
     <Media Include="resources\sounds\music\BYEBYE.wav" />
     <Media Include="resources\sounds\sfx\explosion.mp3" />
     <Media Include="resources\sounds\sfx\explosion.wav" />
-    <Media Include="resources\sounds\siren\eerie-low-siren-fx.wav" />
-    <Media Include="resources\sounds\siren\purge-siren-fx_129bpm (1).wav" />
-    <Media Include="resources\sounds\siren\purge-siren-fx_129bpm.wav" />
-    <Media Include="resources\sounds\siren\scary-alarm-siren-fx_7bpm.wav" />
-    <Media Include="resources\sounds\siren\scary-laugh-fx.wav" />
-    <Media Include="resources\sounds\siren\siren-reverb-fx_165bpm.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

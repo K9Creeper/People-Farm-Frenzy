@@ -71,4 +71,7 @@ public:
 	std::string get_organ_name() { return sAttributes["name"]; }
 	OrganTypes get_organ_type() { return (OrganTypes)nAttributes["type"]; }
 	float get_value() { return OrganValues[get_organ_type()]; }
+
+	void set_time_left(const float& time) { nAttributes["time_left"] = time; }
+	float get_time_left() { return nAttributes["time_left"]; }
 };
