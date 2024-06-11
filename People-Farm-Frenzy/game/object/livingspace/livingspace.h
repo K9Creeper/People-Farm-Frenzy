@@ -42,12 +42,29 @@ Todo:
 static std::unordered_map<LivingSpaceTypes, LPCWSTR>LivingSpaceTextures{
 	// LivingSpaceTypes				SRC
 	{LivingSpaceType_None,			L""},
-	{LivingSpaceType_Shack,			L"resources/sprites/SpriteTest.jpg"},
-	{LivingSpaceType_House ,		L"resources/sprites/SpriteTest.jpg"},
-	{LivingSpaceType_Duplex ,		L"resources/sprites/SpriteTest.jpg"},
-	{LivingSpaceType_Apartment ,	L"resources/sprites/SpriteTest.jpg"},
-	{LivingSpaceType_Warehouse ,	L"resources/sprites/SpriteTest.jpg"},
-	{LivingSpaceType_Skyscraper ,	L"resources/sprites/SpriteTest.jpg"},
+	{LivingSpaceType_Shack,			L"resources/sprites/livingspace/shack.png"},
+	{LivingSpaceType_House ,		L"resources/sprites/livingspace/house.png"},
+	{LivingSpaceType_Duplex ,		L"resources/sprites/livingspace/duplex.png"},
+	{LivingSpaceType_Apartment ,	L"resources/sprites/livingspace/apartment.png"},
+
+	// Max is useless LEEETS BEEE HONEST
+	// jk.. gj max
+
+
+	// THIS DOES NOT HAVE ANYTHING
+	{LivingSpaceType_Warehouse ,	L"resources/sprites/livingspace/apartment.png"},
+	{LivingSpaceType_Skyscraper ,	L"resources/sprites/livingspace/apartment.png"},
+};
+
+struct LivingSpaceSlotInfo {
+	int x, width, height;
+};
+
+static std::unordered_map<int, LivingSpaceSlotInfo>LivingSpaceSlotInfos{
+	// LivingSpaceTypes				SRC
+	{1,			LivingSpaceSlotInfo{95, 259, 53}},
+	{2,			LivingSpaceSlotInfo{510, 259, 53}},
+	{3 ,		LivingSpaceSlotInfo{925, 259, 53}},
 };
 
 class LivingSpace : public GameObject {
@@ -57,5 +74,5 @@ public:
 	int get_max_capacity() { return LivingSpaceCapacity[get_space_type()]; }
 	int get_current_capacity() { return nAttributes["current_capacity"]; }
 	void set_current_capacity(const int& cap) { nAttributes["current_capacity"] = cap; }
-
+	int get_slot() { return nAttributes["slot"]; }
 };

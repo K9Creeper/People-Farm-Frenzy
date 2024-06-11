@@ -8,6 +8,9 @@
 
 #include <iostream>
 
+constexpr float GAMESCALEX();
+constexpr float GAMESCALEY();
+
 void SpawnUFO(std::vector<std::shared_ptr<GameObject>>& objects, const int& x, const int& y, const int& width, const int& height)
 {
 	UFO h;
@@ -110,6 +113,44 @@ void SpawnVFXBloodCloud(std::vector<std::shared_ptr<GameObject>>& objects, const
 	objects.back()->GetSprite()->StartAnimation("default");
 }
 
+
+void AddLivingSpace(std::vector<std::shared_ptr<GameObject>>& objects, const int& slot, LivingSpaceTypes type, const int& capacity) {
+	static const float scaleX = GAMESCALEX();
+	static const float scaleY = GAMESCALEY();
+	
+	LivingSpace h;
+	h.SetType(GameObjectType_LivingSpace);
+
+	int positionX = LivingSpaceSlotInfos[slot].x * scaleX;
+
+	float width = LivingSpaceSlotInfos[slot].width * scaleX + (scaleX * 2);
+	float height = LivingSpaceSlotInfos[slot].height * scaleY + (scaleY * 2);
+
+	h.SetSize(width, height);
+	h.SetPosition(positionX + width/2.f, 0 + height/2.f);
+	h.nAttributes["slot"] = slot;
+	h.nAttributes["type"] = type;
+
+	if(type != LivingSpaceType_None)
+		h.GetSprite()->texture = GUI::gui->LoadTexture(LivingSpaceTextures[type]);
+
+	h.set_current_capacity(min(capacity, h.get_max_capacity()));
+
+	for (int i = 0; i < objects.size(); i++)
+	{
+		if (objects[i]->GetType() != GameObjectType_LivingSpace)
+			continue;
+		LivingSpace* h = reinterpret_cast<LivingSpace*>(objects[i].get());
+		if (h->get_slot() == slot)
+		{
+			objects.erase(objects.begin() + i);
+			break;
+		}
+	}
+
+	objects.push_back(std::make_shared<GameObject>(h));
+}
+
 void SpawnVFXBloodClouds(std::vector<std::shared_ptr<GameObject>>& objects, const int& x, const int& y, const int& width, const int& height, const int& offsetPer = 2) {
 	SpawnVFXBloodCloud(objects, x + offsetPer, y + offsetPer, width, height);
 	SpawnVFXBloodCloud(objects, x - offsetPer, y - offsetPer, width, height);
@@ -205,14 +246,16 @@ std::string formatNumber(const uint64_t& num) {
 	return std::string(formatted);
 }
 
-FloodVector2 generateBiasedCoordinate(FloodVector2 prev, int minX, int maxX, int minY, int maxY, float bias = 1.f, float strength = 10.f) {
+FloodVector2 generateBiasedCoordinate(const FloodVector2& prev, const int& minX, const int& maxX, const int&  minY, const int& maxY, const float& bias = 1.f, const float& strength = 10.f) {
 	int deltaX = 0, deltaY = 0;
 	do {
-		deltaX = (std::rand() % 41) - 20; 
-		deltaY = (std::rand() % 21) - 10; 
+		// not move more than 20 pixels
+		deltaX = (std::rand() % 41) - 20; // This is from -20 to 20 range
+		deltaY = (std::rand() % 21) - 10;// this allos travle from -10 to 10
+										 // bias towards bottom
 		
 		if(std::rand() % 2 == 0)
-			deltaY += (strength) * bias;  // bias towards bottom
+			deltaY += (strength) * bias;  // further bias towards bottom
 	
 	} while (prev.x + deltaX < minX || prev.x + deltaX > maxX ||
 		prev.y + deltaY < minY || prev.y + deltaY > maxY);
@@ -220,11 +263,23 @@ FloodVector2 generateBiasedCoordinate(FloodVector2 prev, int minX, int maxX, int
 	return { prev.x + deltaX, prev.y + deltaY };
 }
 
-float calculateAngle(FloodVector2 human, FloodVector2 target) {
+float calculateAngle(const FloodVector2& human, const FloodVector2& target) {
 	float deltaX = target.x - human.x;
 	float deltaY = target.y - human.y;
+
 	float angleInRadians = std::atan2(deltaY, deltaX);
+	
 	return angleInRadians * (180.0f / 3.1415926);;
+}
+
+constexpr float GAMESCALEX()
+{
+	return FloodGui::Context.Display.DisplaySize.x / 1280;
+}
+
+constexpr float GAMESCALEY()
+{
+	return FloodGui::Context.Display.DisplaySize.y / 720;
 }
 
 inline void GameLoop(Game* game) {
@@ -234,12 +289,8 @@ inline void GameLoop(Game* game) {
 	GameData* gameData = game->GetGameData();
 
 	
-	bool SpawnPress = Graphics::DrawTextureButton(L"resources/sprites/personicon.png", FloodGui::Context.Display.DisplaySize.x/2.f - 300 /2.f, FloodGui::Context.Display.DisplaySize.y - 150.f, 300,  100, FloodColor(241, 11, 13, 255), FloodGui::Context.Display.DisplaySize.x / 2.f - 300 / 2.f + 100, FloodGui::Context.Display.DisplaySize.y - 150.f, 100, 100);
-	{
-		if (SpawnPress && objects.size() <= 3) {
-			SpawnHuman(objects, 500, 100, 80, 80);
-		}
-	}
+	bool SpawnPress = Graphics::DrawTextureButton(L"resources/sprites/personicon.png", FloodGui::Context.Display.DisplaySize.x/2.f - (300*GAMESCALEX()) /2.f, FloodGui::Context.Display.DisplaySize.y - 150.f* GAMESCALEY(), 300* GAMESCALEX(),  100*GAMESCALEY(), FloodColor(241, 11, 13, 255), FloodGui::Context.Display.DisplaySize.x / 2.f - (300* GAMESCALEX()) / 2.f + (100* GAMESCALEX()), FloodGui::Context.Display.DisplaySize.y - (150.f * GAMESCALEY()), 100 * GAMESCALEX(), 100 * GAMESCALEY());
+
 	static std::chrono::milliseconds lastLoop = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	std::chrono::milliseconds now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	
@@ -309,7 +360,7 @@ inline void GameLoop(Game* game) {
 						human->set_dest(vec.x, vec.y);
 
 						float angleDeg = calculateAngle({ static_cast<float>(human->GetSprite()->x), static_cast<float>(human->GetSprite()->y) }, { static_cast<float>(human->get_dest_x()), static_cast<float>(human->get_dest_y()) });
-
+						std::cout << angleDeg << "\n";
 						// Calculate Animations
 						if (angleDeg >= 30 && angleDeg <= 60)
 						{
@@ -356,7 +407,7 @@ inline void GameLoop(Game* game) {
 
 
 						// This needs to be improved
-						int moveDst = ((FloodGui::Context.FrameData.tElaspedFrame.count()*1000.f) * 1.5f);
+						int moveDst = 1;
 
 						if (currentX == destX && currentY == destY) {
 							// reset to (-1, -1)
@@ -440,7 +491,7 @@ inline void GameLoop(Game* game) {
 					// While Button is held decrease curret_capacity - Spawm Humans
 
 					if (livingspace->get_current_capacity() > 0) {
-						SpawnHuman(objects, xSpawn, ySpawn, 70, 70);
+						SpawnHuman(objects, xSpawn, ySpawn, 70 * GAMESCALEX(), 70 * GAMESCALEY());
 
 						livingspace->set_current_capacity(livingspace->get_current_capacity() - 1);
 					}
@@ -588,35 +639,35 @@ inline void GameLoop(Game* game) {
 	{
 		// Money
 		{
-			FloodVector2 glorbuxSize(50, 50);
-			FloodVector2 moneyVec(50, 100);
+			FloodVector2 glorbuxSize(50* GAMESCALEX(), 50 * GAMESCALEY());
+			FloodVector2 moneyVec(50 * GAMESCALEX(), 100 * GAMESCALEY());
 			
 			FloodVector2 topVec = moneyVec - (glorbuxSize / 2.f);
 			FloodVector2 botVec = moneyVec + (glorbuxSize / 2.f);
 			
 			const std::string& money = formatNumber(gameData->Glorbux);
 
-			Graphics::DrawUIElement(money.c_str(), 16, 16, moneyVec.x, moneyVec.y, glorbuxSize.x, glorbuxSize.y, FloodColor(1.f, 1.f, 1.f), L"resources/sprites/glorbuxicon.png");
+			Graphics::DrawUIElement(money.c_str(), 16 * GAMESCALEY(), 16 * GAMESCALEX(), moneyVec.x, moneyVec.y, glorbuxSize.x, glorbuxSize.y, FloodColor(1.f, 1.f, 1.f), L"resources/sprites/glorbuxicon.png");
 		}
 
 		// Upgrade Menu
 		{
 			static bool upgradeOpen = false;
-			static const int& width = 50;
-			static const int& height = 35;
+			static const int& width = 50 * GAMESCALEX();
+			static const int& height = 35 * GAMESCALEY();
 
-			static const int& y = 100 - height / 2.f;
-			static const int& x = FloodGui::Context.Display.DisplaySize.x - width - 30;
+			static const int& y = 100 * GAMESCALEY() - height / 2.f;
+			static const int& x = FloodGui::Context.Display.DisplaySize.x - width - 30 * GAMESCALEX();
 
 			if (!upgradeOpen)
 			{	
-				upgradeOpen = Graphics::DrawTextureButton(L"resources/sprites/threelinesicon.png", x, y, width, height, FloodColor(1.f, 1.f, 1.f), x+(15/2.f), y, width-15, height);
+				upgradeOpen = Graphics::DrawTextureButton(L"resources/sprites/threelinesicon.png", x, y, width, height, FloodColor(1.f, 1.f, 1.f), x+(15 * GAMESCALEX() /2.f), y, width-(15 * GAMESCALEY()), height);
 			}
 			else {
-				drawList->AddRectFilled({ FloodGui::Context.Display.DisplaySize.x - 300, static_cast<float>(y) }, FloodGui::Context.Display.DisplaySize - FloodVector2{0, static_cast<float>(y)}, FloodColor(1.f, 1.f, 1.f));
-				if(Graphics::DrawTextureButton(L"resources/sprites/threelinesicon.png", FloodGui::Context.Display.DisplaySize.x - 300, y, width, height, FloodColor(1.f, 1.f, 1.f), FloodGui::Context.Display.DisplaySize.x  - 300 + (15 / 2.f), y, width - 15, height))
+				drawList->AddRectFilled({ FloodGui::Context.Display.DisplaySize.x - 300 * GAMESCALEX(), static_cast<float>(y) }, FloodGui::Context.Display.DisplaySize - FloodVector2{0, static_cast<float>(y)}, FloodColor(1.f, 1.f, 1.f));
+				if(Graphics::DrawTextureButton(L"resources/sprites/threelinesicon.png", FloodGui::Context.Display.DisplaySize.x - 300 * GAMESCALEX(), y, width, height, FloodColor(1.f, 1.f, 1.f), FloodGui::Context.Display.DisplaySize.x  - 300 * GAMESCALEX() + (15 * GAMESCALEX() / 2.f), y, width - 15 * GAMESCALEX(), height))
 					upgradeOpen = false;
-				drawList->AddText("Upgrades", { FloodGui::Context.Display.DisplaySize.x - 300 + (15 / 2.f) + width + 5, y + height - (height / 4.f) }, FloodColor(), 15, 15);
+				drawList->AddText("Upgrades", { FloodGui::Context.Display.DisplaySize.x - 300*GAMESCALEX() + (15 * GAMESCALEX() / 2.f) + width + 5* GAMESCALEX(), y + height - (height / 4.f* GAMESCALEY()) }, FloodColor(), 15* GAMESCALEY(), 15* GAMESCALEX());
 				// Loop through upgrades.
 
 			}
@@ -760,8 +811,6 @@ void LivingSpaceRefillRate(void* gamePtr, void* ptr)
 }
 
 
-
-
 void Game::InitalizeGameData() {
 	// Retrive Game Saves???
 	//
@@ -794,6 +843,7 @@ void Game::InitalizeGameData() {
 	}
 
 	std::srand(time(NULL));
+
 }
 
 void Game::InitalizeGameSound() {
