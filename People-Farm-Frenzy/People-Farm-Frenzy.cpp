@@ -6,8 +6,12 @@
 #include "game/game.h"
 
 
-int main()
-{
+int CALLBACK WinMain(
+    HINSTANCE   hInstance,
+    HINSTANCE   hPrevInstance,
+    LPSTR       lpCmdLine,
+    int         nCmdShow
+) {
     //This is going to be a test of the GUI
     //
     Game game;
